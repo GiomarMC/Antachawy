@@ -1,0 +1,13 @@
+rich==13.7.1
+typer==0.12.3
+anytree==2.12.1
+colorama==0.4.6
+click==8.1.7
+pyparsing==3.1.2
+markdown-it-py==3.0.0
+mdurl==0.1.2
+pydot==2.0.0
+Pygments==2.18.0
+six==1.16.0
+twine==5.1.1
+antachawy=0.1.0
