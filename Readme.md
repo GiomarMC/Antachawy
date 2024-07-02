@@ -60,13 +60,14 @@ Con el entorno virtual activado y las dependencias instaladas, puedes ejecutar e
 
 ### En Linux/MaxOS
 
-    ```bash
-    python3 src/main.py <inpust/archivo.awy>
-    ```
+```bash
+python3 src/main.py <inpust/archivo.awy>
+```
 ### En Windows
-    ```bash
-    python src\\main.py <inputs\\archivo.awy>
-    ```
+
+```bash
+python src\main.py <inputs\archivo.awy>
+```
 
 Reemplaza el <archivo.awy> con el nombre del archivo fuente que deseas compilar.
 
