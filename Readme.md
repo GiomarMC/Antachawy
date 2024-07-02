@@ -4,7 +4,7 @@ Este proyecto tiene como objetivo desarrollar un compilador para un nuevo lengua
 
 ## Requisitos Previos
 
-- Python 3.7 o superior
+- Python 3.8 o superior
 - pip (gestor de paquetes de Python)
 
 ## Creación y Activación de un Entorno Virtual
@@ -58,9 +58,15 @@ Esto instalará todas las dependencias necesarias para el proyecto.
 
 Con el entorno virtual activado y las dependencias instaladas, puedes ejecutar el compilador con el siguiente comando:
 
-```bash
-python main.py <archivo.awy>
-```
+### En Linux/MaxOS
+
+    ```bash
+    python3 src/main.py <inpust/archivo.awy>
+    ```
+### En Windows
+    ```bash
+    python src\\main.py <inputs\\archivo.awy>
+    ```
 
 Reemplaza el <archivo.awy> con el nombre del archivo fuente que deseas compilar.
 
