@@ -61,7 +61,7 @@ Con el entorno virtual activado y las dependencias instaladas, puedes ejecutar e
 ### En Linux/MaxOS
 
 ```bash
-python3 src/main.py <inpust/archivo.awy>
+python3 src/main.py <inputs/archivo.awy>
 ```
 ### En Windows
 
