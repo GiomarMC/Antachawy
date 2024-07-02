@@ -16,6 +16,7 @@ class LexemasAntachawy:
     PAREN_IZQ = "("                             # (
     PAREN_DER = ")"                             # )
     COMA = ","                                  # ,
+    PUNTOYCOMA = ";"                            # ;
     MAS = "+"                                   # +
     MENOS = "-"                                 # -
     MULTIPLICA = "*"                            # *
@@ -63,6 +64,7 @@ lexema_a_etiqueta = {
     LexemasAntachawy.PAREN_IZQ: EtiquetasAntachawy.BLOQUE,
     LexemasAntachawy.PAREN_DER: EtiquetasAntachawy.BLOQUE,
     LexemasAntachawy.COMA: EtiquetasAntachawy.BLOQUE,
+    LexemasAntachawy.PUNTOYCOMA: EtiquetasAntachawy.BLOQUE,
     LexemasAntachawy.MAS: EtiquetasAntachawy.OPERADOR_ARITMETICO,
     LexemasAntachawy.MENOS: EtiquetasAntachawy.OPERADOR_ARITMETICO,
     LexemasAntachawy.MULTIPLICA: EtiquetasAntachawy.OPERADOR_ARITMETICO,
