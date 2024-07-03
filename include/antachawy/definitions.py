@@ -6,8 +6,8 @@ class LexemasAntachawy:
     QAYTU = "qaytu"                             # string
     BOOL = "bool"                               # bool
     ARI = "ari"                                 # if
-    MANA_CHAYQA_ARI = "mana chayqa ari"         # else if
-    MANA_CHAYQA = "mana chayqa"                 # else
+    MANA_CHAYQA_ARI = "mana_chayqa_ari"         # else if
+    MANA_CHAYQA = "mana_chayqa"                 # else
     SIQIY = "Siqiy"                             # print
     IMAPAQ = "imapaq"                           # for
     CHAYKAMA = "chaykama"                       # while
