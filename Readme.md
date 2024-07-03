@@ -6,8 +6,15 @@ Este proyecto tiene como objetivo desarrollar un compilador para un nuevo lengua
 
 - Python 3.8 o superior
 - pip (gestor de paquetes de Python)
+- git
 
 ## Creación y Activación de un Entorno Virtual
+
+Primero se debe clonar el repositorio
+
+```bash
+git clone https://github.com/GiomarMC/Antachawy.git
+```
 
 ### En Windows
 
