@@ -10,11 +10,13 @@ Este proyecto tiene como objetivo desarrollar un compilador para un nuevo lengua
 
 ## Creación y Activación de un Entorno Virtual
 
-Primero se debe clonar el repositorio
+Primero se debe clonar el repositorio.
 
 ```bash
 git clone https://github.com/GiomarMC/Antachawy.git
 ```
+
+Luego ubicarse en la carpeta donde se encuentra el proyecto y continuar con la creacion del entorno virtual.
 
 ### En Windows
 
