@@ -4,11 +4,11 @@ from antachawy.token import Token
 class Scanner:
     def __init__(self):
         # Inicializa el scanner con valores predeterminados
-        self.code = ""  # Contenido del archivo fuente
-        self.lineno = 1  # Línea actual del archivo fuente
-        self.current_char = ""  # Caracter actual que se está procesando
-        self.idx = 0  # Índice actual en el archivo fuente
-        self.tokens = []  # Lista de tokens generados
+        self.code = ""                          # Contenido del archivo fuente
+        self.lineno = 1                         # Línea actual del archivo fuente
+        self.current_char = ""                  # Caracter actual que se está procesando
+        self.idx = 0                            # Índice actual en el archivo fuente
+        self.tokens = []                        # Lista de tokens generados
 
     def __open_file(self, filename: str):
         # Abre un archivo y guarda su contenido en self.code
@@ -74,7 +74,7 @@ class Scanner:
         # Ignora los comentarios de bloque
         while True:
             if self.__get_next_char() is None:
-                raise SyntaxError("Comentario de bloque no terminado en la línea {}".format(self.lineno))
+                raise SyntaxError("Comentario de bloque no terminado en la línea {}".format(self.lineno))  # Traducir la expresion a quechua (Comentario de bloque no terminado en la línea {})
             if self.current_char == '*' and self.__peek_next_char() == '/':
                 self.__get_next_char()
                 break
@@ -89,12 +89,10 @@ class Scanner:
         while self.__get_next_char() and self.current_char != '"':
             lexema += self.current_char
 
-        # if self.current_char != '"':
-        #    raise SyntaxError("literal de cadena no terminada en la línea {}".format(self.lineno)) # Traducir la expresion a quechua (literal de cadena no terminada en la línea {})
+        if self.current_char != '"':
+            raise SyntaxError("literal de cadena no terminada en la línea {}".format(self.lineno)) # Traducir la expresion a quechua (literal de cadena no terminada en la línea {})
 
         lexema += '"'
-        self.idx += 1
-
         return Token(lexema, EtiquetasAntachawy.CADENA, linea=self.lineno, idx=startidx)
 
     def __get_character(self):
@@ -109,7 +107,7 @@ class Scanner:
             raise SyntaxError("literal de caracter no terminada en la línea {}".format(self.lineno)) # Traducir la expresion a quechua (literal de caracter no terminada en la línea {})
 
         lexema += "'"
-        self.idx += 1
+        return Token(lexema, EtiquetasAntachawy.TIPO_SANANPA, self.lineno, startidx)
 
     def __get_number(self):
         # Procesa y devuelve un token de número
@@ -144,30 +142,16 @@ class Scanner:
         startidx = self.idx - 1
         lexema = self.current_char
 
-        if self.idx < len(self.code) and self.code[startidx:startidx + 2] in simbolos_compuestos:
+        if self.idx < len(self.code) and self.code[startidx: startidx + 2] in simbolos_compuestos:
             lexema += self.code[self.idx]
             self.idx += 1
-        elif self.idx < len(self.code) and self.code[startidx] in simbolos_compuestos:
-            lexema = self.code[startidx]
-
+        elif lexema in lexema_a_etiqueta:
+            return Token(lexema, lexema_a_etiqueta[lexema], self.lineno, startidx)
+        
         if lexema in lexema_a_etiqueta:
-            self.tokens.append((lexema, lexema_a_etiqueta[lexema]))
-            self.idx += 1
-            if self.idx < len(self.code):
-                self.current_char = self.code[self.idx]
-            return
-
-        if lexema == ";":
-            self.tokens.append((lexema, lexema_a_etiqueta[LexemasAntachawy.PUNTOYCOMA]))
-            self.idx += 1
-            if self.idx < len(self.code):
-                self.current_char = self.code[self.idx]
-            return
-
-        self.tokens.append((lexema, EtiquetasAntachawy.ID))
-        self.idx += 1
-        if self.idx < len(self.code):
-            self.current_char = self.code[self.idx]
+            return Token(lexema, lexema_a_etiqueta[lexema], self.lineno, startidx)
+        else:
+            raise SyntaxError("Carácter no reconocido '{}' en la línea {}".format(lexema, self.lineno))
 
     def tokenize(self, filename: str):
         # Tokeniza el contenido del archivo dado
