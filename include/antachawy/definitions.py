@@ -194,10 +194,6 @@ producciones = {
         ["Definicion", "ListaDefiniciones"],
         ["Definicion"]
     ],
-    "ListaDefiniciones": [
-        ["Definicion", "ListaDefiniciones"],
-        ["Definicion"]
-    ],
     "Definicion": [
         [LexemasAntachawy.QHAPAQ, LexemasAntachawy.PAREN_IZQ, LexemasAntachawy.PAREN_DER, LexemasAntachawy.LLAVE_IZQ, "Bloque", LexemasAntachawy.LLAVE_DER],
         [LexemasAntachawy.QHAPAQ, LexemasAntachawy.PAREN_IZQ, LexemasAntachawy.PAREN_DER, LexemasAntachawy.LLAVE_IZQ, LexemasAntachawy.LLAVE_DER]
@@ -273,13 +269,16 @@ producciones = {
     ],
     "Retorno": [LexemasAntachawy.CUTICHIY, LexemasAntachawy.PAREN_IZQ, "Expresion", LexemasAntachawy.PAREN_DER],
     "Expresion": [
-        ["Expresion", "Operador", "Expresion"], 
+        ["Expresion", "Operador", "Expresion"],
+        [LexemasAntachawy.ID, "Expresion"],
         [LexemasAntachawy.ID], 
-        [LexemasAntachawy.NUMERO], 
+        [LexemasAntachawy.NUMERO, "Expresion"],
+        [LexemasAntachawy.NUMERO],
+        [LexemasAntachawy.CADENA, "Expresion"], 
         [LexemasAntachawy.CADENA],
-        ["Expresion", LexemasAntachawy.CADENA, LexemasAntachawy.ID],
-        [LexemasAntachawy.CADENA, LexemasAntachawy.ID],
+        [LexemasAntachawy.CADENA, "Expresion"],
         [LexemasAntachawy.YANQA],
+        [LexemasAntachawy.CHIQAQ, "Expresion"],
         [LexemasAntachawy.CHIQAQ]
     ],
 }
