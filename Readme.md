@@ -75,7 +75,7 @@ python3 src/main.py inputs/archivo.awy
 ### En Windows
 
 ```bash
-python src\main.py inputs\archivo.awy
+python src\main.py .\inputs\archivo.awy
 ```
 
 Reemplaza el <archivo.awy> con el nombre del archivo fuente que deseas compilar.
