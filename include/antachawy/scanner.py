@@ -1,5 +1,6 @@
 from antachawy.definitions import LexemasAntachawy, EtiquetasAntachawy, lexema_a_etiqueta, simbolos_compuestos
 from antachawy.token import Token
+import re
 
 class Scanner:
     def __init__(self):
@@ -9,6 +10,7 @@ class Scanner:
         self.current_char = ""                  # Caracter actual que se está procesando
         self.idx = 0                            # Índice actual en el archivo fuente
         self.tokens = []                        # Lista de tokens generados
+        self.errors = []                        # Lista de errores encontrados
 
     def __open_file(self, filename: str):
         # Abre un archivo y guarda su contenido en self.code
@@ -24,6 +26,21 @@ class Scanner:
         else:
             self.current_char = None
             return None
+    
+    def __remove_coments(self, line: str):
+        # Remueve los comentarios de una línea
+        line = re.sub(r'::.*', '', line)
+        line = re.sub(r'/:*.*\*:', '', line)
+        return line
+
+    def __get_current_line_content(self):
+        # Devuelve el contenido de la línea actual donde se encuentra el índice(self.idx)
+        startidx = self.code.rfind('\n', 0, self.idx - 1) + 1
+        end = self.code.find('\n', self.idx - 1)
+        if end == -1:
+            end = len(self.code)
+        line_content = self.code[startidx: end].strip()
+        return self.__remove_coments(line_content)
 
     def __get_tokens(self):
         # Principal función de análisis que recorre el archivo y genera tokens
@@ -33,27 +50,37 @@ class Scanner:
                 if self.current_char == '\n':
                     self.lineno += 1
                 continue
-            elif self.current_char == '/' and self.__peek_next_char() == '/':
+            elif self.current_char == ':' and self.__peek_next_char() == ':':
                 # Ignora los comentarios de línea
                 self.__skip_line_comment()
-            elif self.current_char == '/' and self.__peek_next_char() == '*':
+            elif self.current_char == ':' and self.__peek_next_char() == '*':
                 # Ignora los comentarios de bloque
                 self.__skip_block_comment()
             elif self.current_char == '"':
                 # Maneja las cadenas
-                self.tokens.append(self.__get_string())
+                token = self.__get_string()
+                if token:
+                    self.tokens.append(token)
             elif self.current_char == "'":
                 # Maneja los caracteres
-                self.tokens.append(self.__get_character())
+                token = self.__get_character()
+                if token:
+                    self.tokens.append(token)
             elif self.current_char.isdigit():
                 # Maneja los números
-                self.tokens.append(self.__get_number())
+                token = self.__get_number()
+                if token:
+                    self.tokens.append(token)
             elif self.current_char.isalpha():
                 # Maneja los identificadores y palabras clave
-                self.tokens.append(self.__get_id())
+                token = self.__get_id()
+                if token:
+                    self.tokens.append(token)
             else:
                 # Maneja caracteres especiales
-                self.tokens.append(self.__get_special_character())
+                token = self.__get_special_character()
+                if token:
+                    self.tokens.append(token)
 
         return self.tokens
 
@@ -74,8 +101,13 @@ class Scanner:
         # Ignora los comentarios de bloque
         while True:
             if self.__get_next_char() is None:
-                raise SyntaxError("Comentario de bloque no terminado en la línea {}".format(self.lineno))  # Traducir la expresion a quechua (Comentario de bloque no terminado en la línea {})
-            if self.current_char == '*' and self.__peek_next_char() == '/':
+                self.errors.append({
+                    "mensaje": "Comentario de bloque no terminado",
+                    "linea": self.lineno,
+                    "contenido": self.__get_current_line_content()
+                })
+                return
+            if self.current_char == '*' and self.__peek_next_char() == ':':
                 self.__get_next_char()
                 break
             if self.current_char == '\n':
@@ -86,12 +118,17 @@ class Scanner:
         startidx = self.idx - 1
         lexema = '"'
 
-        while self.__get_next_char() and self.current_char != '"':
+        while self.__get_next_char() and self.current_char != '"' and self.current_char != '\n':
             lexema += self.current_char
 
         if self.current_char != '"':
-            raise SyntaxError("literal de cadena no terminada en la línea {}".format(self.lineno)) # Traducir la expresion a quechua (literal de cadena no terminada en la línea {})
-
+            self.errors.append({
+                "mensaje": "literal de cadena no terminada en la línea",
+                "linea": self.lineno,
+                "contenido": self.__get_current_line_content()
+            })
+            self.lineno += 1
+            return
         lexema += '"'
         return Token(lexema, EtiquetasAntachawy.CADENA, linea=self.lineno, idx=startidx)
 
@@ -99,13 +136,28 @@ class Scanner:
         # Procesa y devuelve un token de caracter
         startidx = self.idx - 1
         lexema = "'"
+        character_content = ""
 
-        while self.__get_next_char() and self.current_char != "'":
+        while self.__get_next_char() and self.current_char != "'" and self.current_char != '\n':
+            character_content += self.current_char
             lexema += self.current_char
 
+        if len(character_content) > 1 and self.current_char != "\n":
+            self.errors.append({
+                "mensaje": "Caracteres multiples en un literal de caracter",
+                "linea": self.lineno,
+                "contenido": self.__get_current_line_content()
+            })
+            return
+        
         if self.current_char != "'":
-            raise SyntaxError("literal de caracter no terminada en la línea {}".format(self.lineno)) # Traducir la expresion a quechua (literal de caracter no terminada en la línea {})
-
+            self.errors.append({
+                "mensaje": "literal de caracter no terminado en la línea",
+                "linea": self.lineno,
+                "contenido": self.__get_current_line_content()
+            })
+            self.lineno += 1
+            return
         lexema += "'"
         return Token(lexema, EtiquetasAntachawy.TIPO_SANANPA, self.lineno, startidx)
 
@@ -113,9 +165,34 @@ class Scanner:
         # Procesa y devuelve un token de número
         startidx = self.idx - 1
         lexema = self.current_char
+        decimal_point_count = 0
+
+        if self.current_char == ".":
+            decimal_point_count += 1
 
         while self.__get_next_char() and (self.current_char.isdigit() or self.current_char == "."):
+            if self.current_char == ".":
+                decimal_point_count += 1
+                if decimal_point_count > 1:
+                    self.errors.append({
+                        "mensaje": "Número con más de un punto decimal",
+                        "linea": self.lineno,
+                        "contenido": self.__get_current_line_content()
+                    })
+                    return
             lexema += self.current_char
+
+        if self.current_char.isalpha():
+            while self.current_char and self.current_char.isalpha():
+                lexema += self.current_char
+                self.__get_next_char()
+            
+            self.errors.append({
+                "mensaje": f"Numero seguido por caracteres no permitidos",
+                "linea": self.lineno,
+                "contenido": self.__get_current_line_content()
+            })
+            return
 
         if self.current_char:
             self.idx -= 1
@@ -151,7 +228,12 @@ class Scanner:
         if lexema in lexema_a_etiqueta:
             return Token(lexema, lexema_a_etiqueta[lexema], self.lineno, startidx)
         else:
-            raise SyntaxError("Carácter no reconocido '{}' en la línea {}".format(lexema, self.lineno))
+            self.errors.append({
+                "mensaje": "Caracter no reconocido",
+                "linea": self.lineno,
+                "contenido": self.__get_current_line_content()
+            })
+            return
 
     def tokenize(self, filename: str):
         # Tokeniza el contenido del archivo dado
