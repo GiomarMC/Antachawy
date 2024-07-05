@@ -17,6 +17,7 @@ def main(file_path: Path = typer.Argument("./inputs/main.awy", help="Archivo de 
     console_handler = ConsoleHandler()
     console_handler.print_title()
     console_handler.scan_debug_table(tokens)
+    console_handler.show_errors(scanner.errors)
 
 if __name__ == "__main__":
     typer.run(main)
