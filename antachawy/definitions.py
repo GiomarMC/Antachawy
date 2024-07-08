@@ -289,5 +289,5 @@ producciones = {
     "For": [LexemasAntachawy.IMAPAQ],
     "While": [LexemasAntachawy.CHAYKAMA],
     "Assign": [LexemasAntachawy.ASIGNA],
-    "NUMERO": [LexemasAntachawy.NUMERO],
+    "NUMERO": [LexemasAntachawy.NUMERO]
 }
