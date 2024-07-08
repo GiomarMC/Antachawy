@@ -1,0 +1,37 @@
+Programa -> Definicion .
+Definicion -> Qhapaq LParen RParen LBrace Bloque RBrace | Qhapaq LParen RParen LBrace RBrace.
+Bloque -> ListaCondiciones | Declaraciones | Siqiy LParen Expresion RParen | Operaciones .
+ListaCondiciones -> Condiciones ListaCondiciones | Condiciones .
+Condiciones -> Ari LParen Condicion RParen LBrace Bloque RBrace CondicionesElseif CondicionElse | Ari LParen Condicion RParen LBrace Bloque RBrace CondicionElse | Ari LParen Condicion RParen LBrace Bloque RBrace | CicloFor | CicloWhile.
+CicloFor -> For LParen Declaracion PuntoyComa Condicion PuntoyComa Operacion RParen LBrace Bloque RBrace .
+CicloWhile -> While LParen Condicion RParen LBrace Bloque RBrace .
+CondicionesElseif -> CondicionElseif CondicionesElseif | CondicionElseif .
+CondicionElseif -> ManaChayqaAri LParen Condicion RParen LBrace Bloque RBrace .
+CondicionElse -> ManaChayqa LBrace Bloque RBrace .
+Declaraciones -> Declaracion Declaraciones | Declaracion .
+Declaracion -> Tipo Asignacion | Tipo Expresion .
+Operaciones -> Operacion Operaciones | Operacion .
+Operacion -> ID Assign ID Operador ID | ID Assign NUMERO Operador ID | ID Assign ID Operador NUMERO | ID Assign NUMERO Operador NUMERO .
+Asignacion -> ID Assign Expresion.
+Condicion -> Expresion OperadorRelacional Expresion | Expresion .
+Operador -> + | - | * | / .
+OperadorRelacional -> > | < | == | != | <= | >= .
+Tipo -> Yupay | Chunkayuq | Sananpa | Qaytu | Bool .
+Expresion -> ID ExpresionPrime | NUMERO ExpresionPrime | CADENA ExpresionPrime | Yanqa ExpresionPrime | Chiqaq ExpresionPrime .
+ExpresionPrime -> Operador Expresion ExpresionPrime | epsilon .
+LParen -> (.
+RParen -> ).
+LBrace -> {.
+RBrace -> }.
+Assign -> =.
+PuntoyComa -> ; .
+Ari -> ari.
+ManaChayqaAri -> mana_chayqa_ari.
+ManaChayqa -> mana_chayqa.
+For -> imapaq .
+While -> chaykama .
+ID -> id .
+NUMERO -> numero .
+CADENA -> cadena .
+Yanqa -> yanqa .
+Chiqaq -> chiqaq .
