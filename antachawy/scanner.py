@@ -48,6 +48,7 @@ class Scanner:
             if self.current_char.isspace():
                 # Ignora los espacios en blanco
                 if self.current_char == '\n':
+                    self.tokens.append(Token("\n", EtiquetasAntachawy.SALTO_LINEA, self.lineno, self.idx - 1))
                     self.lineno += 1
                 continue
             elif self.current_char == ':' and self.__peek_next_char() == ':':
@@ -95,6 +96,8 @@ class Scanner:
         # Ignora los comentarios de línea
         while self.__get_next_char() is not None and self.current_char != '\n':
             continue
+        if self.current_char == '\n':
+            self.tokens.append(Token("\n", EtiquetasAntachawy.SALTO_LINEA, self.lineno, self.idx - 1))
         self.lineno += 1
 
     def __skip_block_comment(self):
@@ -127,7 +130,6 @@ class Scanner:
                 "linea": self.lineno,
                 "contenido": self.__get_current_line_content()
             })
-            self.lineno += 1
             return
         lexema += '"'
         return Token(lexema, EtiquetasAntachawy.CADENA, linea=self.lineno, idx=startidx)
@@ -196,8 +198,11 @@ class Scanner:
 
         if self.current_char:
             self.idx -= 1
-
-        return Token(lexema, EtiquetasAntachawy.NUMERO, self.lineno, startidx)
+        
+        if "." in lexema:
+            return Token(lexema, EtiquetasAntachawy.NUMEROFLOTANTE, self.lineno, startidx)
+        else:
+            return Token(lexema, EtiquetasAntachawy.NUMEROENTERO, self.lineno, startidx)
 
     def __get_id(self):
         # Procesa y devuelve un token de identificador o palabra clave
