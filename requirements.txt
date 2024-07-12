@@ -10,3 +10,4 @@ pydot==2.0.0
 Pygments==2.18.0
 six==1.16.0
 twine==5.1.1
+graphviz==0.20.3
