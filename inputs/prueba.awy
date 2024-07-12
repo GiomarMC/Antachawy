@@ -1,0 +1,18 @@
+qhapaq()
+{
+    siqiy("Bienvenido a Antachawy")
+    yupay x 
+    yupay a = 5
+    yupay b = 10
+    chunkayuq c = 3.5
+    chunkayuq d = 2.5
+    sananpa letra = 'A'
+    qaytu saludo = "Hola, mundo!"
+
+    yupay f = a + b
+    
+    x = f - 2
+    
+    siqiy(a)
+    siqiy("La suma de " + a "+" b + "es " + f)
+}
