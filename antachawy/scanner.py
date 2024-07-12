@@ -161,7 +161,7 @@ class Scanner:
             self.lineno += 1
             return
         lexema += "'"
-        return Token(lexema, EtiquetasAntachawy.TIPO_SANANPA, self.lineno, startidx)
+        return Token(lexema, EtiquetasAntachawy.CARACTER, self.lineno, startidx)
 
     def __get_number(self):
         # Procesa y devuelve un token de número
