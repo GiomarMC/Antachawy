@@ -25,6 +25,8 @@ Termino -> ( Expresion )
 	| flotante
 	| caracter
 	| cadena
+    | chinqaq
+    | yanqa
 ExpresionImpresion -> Expresion ExpresionImpresionPrime
 ExpresionImpresionPrime -> coma ExpresionImpresion
 			| ε
