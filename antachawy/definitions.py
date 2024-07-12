@@ -8,7 +8,7 @@ class LexemasAntachawy:
     ARI = "ari"                                 # if
     MANA_CHAYQA_ARI = "mana_chayqa_ari"         # else if
     MANA_CHAYQA = "mana_chayqa"                 # else
-    SIQIY = "Siqiy"                             # print
+    SIQIY = "siqiy"                             # print
     IMAPAQ = "imapaq"                           # for
     CHAYKAMA = "chaykama"                       # while
     YANQA = "yanqa"                             # true
@@ -66,7 +66,7 @@ class EtiquetasAntachawy:
     COMA = "COMA"
     PUNTOYCOMA = "PUNTOYCOMA"
     PROGRAMA = "PROGRAMA"
-    NUMEROENTERO = "NUMERO"
+    NUMEROENTERO = "ENTERO"
     NUMEROFLOTANTE = "FLOTANTE"
     CARACTER = "CARACTER"
     CADENA = "CADENA"
