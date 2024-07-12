@@ -1,0 +1,7 @@
+qhapaq ()
+{
+    bool flag = yanqa
+    qaytu name = "Antachawy"
+    sananpa pi = 3.14
+    siqiy ( flag, name, pi )
+}

@@ -1,0 +1,8 @@
+qhapaq () 
+{
+    yupay a = 1
+    yupay b = 2
+    yupay c
+    c = a * b
+    siqiy ( c )
+}
