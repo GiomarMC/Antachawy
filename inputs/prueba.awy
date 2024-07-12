@@ -11,5 +11,5 @@ qhapaq()
     yupay f = a + b
     x = f - 2
     siqiy(a)
-    siqiy("La suma de " , a " + " , b , "es " , f)
+    siqiy("La suma de " , a , " + " , b , "es " , f)
 }
