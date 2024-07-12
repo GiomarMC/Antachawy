@@ -1,4 +1,4 @@
-from antachawy.definitions import LexemasAntachawy, EtiquetasAntachawy, primeros, segundos
+from antachawy.definitions import LexemasAntachawy, EtiquetasAntachawy, primeros
 from antachawy.scanner import Scanner
 
 from anytree import Node, RenderTree
@@ -40,22 +40,26 @@ class RecursiveDescentParser:
             raise SyntaxError(f"Token inesperado '{self.current_token.etiqueta}' en la línea {self.current_token.linea} esperaba {expected_tag}")
         
     def panic_mode(self, *expected_tags):
+        print(f"Entrando en modo pánico. Tokens esperados: {expected_tags}. Token actual: {self.current_token.etiqueta if self.current_token else 'None'} en la línea {self.current_token.linea if self.current_token else 'N/A'}")
         while self.current_token is not None and self.current_token.etiqueta not in expected_tags:
             self.current_token_idx += 1
             if self.current_token_idx < len(self.tokens):
                 self.current_token = self.tokens[self.current_token_idx]
             else:
                 self.current_token = None
+        
+        if self.current_token is None:
+            print("No se encontraron tokens esperados. Finalizando análisis sintáctico.")
+        else:
+            print(f"Token encontrado: {self.current_token.etiqueta} en la línea {self.current_token.linea}")
     
     def programa(self):
-        print("Funcion programa -> " + self.current_token.etiqueta + " " + str(self.current_token.linea))
         node = Node("Programa")
         node_definicion = self.definicion()
         node.children = [node_definicion]
         return node
     
     def definicion(self):
-        print("Funcion definicion -> " + self.current_token.etiqueta + " " + str(self.current_token.linea))
         node = Node("Definicion")
         self.consume(EtiquetasAntachawy.PROGRAMA)
         self.consume(EtiquetasAntachawy.PAREN_IZQ)
@@ -64,13 +68,11 @@ class RecursiveDescentParser:
         self.consume(EtiquetasAntachawy.LLAVE_IZQ)
         self.consume(EtiquetasAntachawy.SALTO_LINEA)
         node_lista_sentencias = self.lista_sentencias()
-        node.children = [node_lista_sentencias]
-        self.consume(EtiquetasAntachawy.SALTO_LINEA)
+        node.children = [Node(LexemasAntachawy.QHAPAQ),Node(LexemasAntachawy.PAREN_IZQ),Node(LexemasAntachawy.PAREN_DER),Node(LexemasAntachawy.LLAVE_IZQ),node_lista_sentencias,Node(LexemasAntachawy.LLAVE_DER)]
         self.consume(EtiquetasAntachawy.LLAVE_DER)
         return node
     
     def lista_sentencias(self):
-        print("Funcion lista_sentencias -> " + self.current_token.etiqueta + " " + str(self.current_token.linea))
         node = Node("ListaSentencias")
         if self.current_token.etiqueta in primeros["ListaSentencias"]:
             node_sentencia = self.sentencias()
@@ -79,7 +81,6 @@ class RecursiveDescentParser:
         return node
     
     def sentencias(self):
-        print("Funcion sentencias -> " + self.current_token.etiqueta + " " + str(self.current_token.linea))
         node = Node("Sentencias")
         try:
             if self.current_token.etiqueta in primeros["Declaraciones"]:
@@ -101,7 +102,6 @@ class RecursiveDescentParser:
         return node
     
     def declaraciones(self):
-        print("Funcion declaraciones -> " + self.current_token.etiqueta + " " + str(self.current_token.linea))
         node = Node("Declaraciones")
         node_tipo = self.tipo()
         self.consume(EtiquetasAntachawy.ID)
@@ -110,7 +110,6 @@ class RecursiveDescentParser:
         return node
     
     def declaraciones_prime(self):
-        print("Funcion declaraciones_prime -> " + self.current_token.etiqueta + " " + str(self.current_token.linea))
         node = Node("DeclaracionesPrime")
         if self.current_token.etiqueta in primeros["DeclaracionesPrime"]:
             self.consume(EtiquetasAntachawy.ASIGNACION)
@@ -119,7 +118,6 @@ class RecursiveDescentParser:
         return node
     
     def asignaciones(self):
-        print("Funcion asignaciones -> " + self.current_token.etiqueta + " " + str(self.current_token.linea))
         node = Node("Asignaciones")
         self.consume(EtiquetasAntachawy.ID)
         self.consume(EtiquetasAntachawy.ASIGNACION)
@@ -128,7 +126,6 @@ class RecursiveDescentParser:
         return node
     
     def impresion(self):
-        print("Funcion impresion -> " + self.current_token.etiqueta + " " + str(self.current_token.linea))
         node = Node("Impresiones")
         self.consume(EtiquetasAntachawy.IMPRESION)
         self.consume(EtiquetasAntachawy.PAREN_IZQ)
@@ -138,7 +135,6 @@ class RecursiveDescentParser:
         return node
     
     def tipo(self):
-        print("Funcion tipo -> " + self.current_token.etiqueta + " " + str(self.current_token.linea))
         node = Node("Tipo")
         if self.current_token.etiqueta in primeros["Tipo"]:
             node_tipo = Node(self.current_token.etiqueta)
@@ -149,7 +145,6 @@ class RecursiveDescentParser:
         return node
     
     def expresion(self):
-        print("Funcion expresion -> " + self.current_token.etiqueta + " " + str(self.current_token.linea))
         node = Node("Expresion")
         node_termino = self.termino()
         node_expresion_prime = self.expresion_prime()
@@ -157,7 +152,6 @@ class RecursiveDescentParser:
         return node
     
     def expresion_prime(self):
-        print("Funcion expresion_prime -> " + self.current_token.etiqueta + " " + str(self.current_token.linea))
         node = Node("ExpresionPrime")
         if self.current_token.etiqueta in primeros["ExpresionPrime"]:
             node_operador = self.operador()
@@ -167,7 +161,6 @@ class RecursiveDescentParser:
         return node
     
     def operador(self):
-        print("Funcion operador -> " + self.current_token.etiqueta + " " + str(self.current_token.linea))
         node = Node("Operador")
         if self.current_token.etiqueta in primeros["Operador"]:
             node_operador = Node(self.current_token.etiqueta)
@@ -178,7 +171,6 @@ class RecursiveDescentParser:
         return node
     
     def termino(self):
-        print("Funcion termino -> " + self.current_token.etiqueta + " " + str(self.current_token.linea))
         node = Node("Termino")
         if self.current_token.etiqueta in primeros["Termino"]:
             if self.current_token.etiqueta == EtiquetasAntachawy.PAREN_IZQ:
@@ -195,7 +187,6 @@ class RecursiveDescentParser:
         return node
     
     def expresion_impresion(self):
-        print("Funcion expresion_impresion -> " + self.current_token.etiqueta + " " + str(self.current_token.linea))
         node = Node("ExpresionImpresion")
         node_expresion = self.expresion()
         node_expresion_impresion_prime = self.expresion_impresion_prime()
@@ -203,7 +194,6 @@ class RecursiveDescentParser:
         return node
     
     def expresion_impresion_prime(self):
-        print("Funcion expresion_impresion_prime -> " + self.current_token.etiqueta + " " + str(self.current_token.linea))
         node = Node("ExpresionImpresionPrime")
         if self.current_token.etiqueta in primeros["ExpresionImpresionPrime"]:
             self.consume(self.current_token.etiqueta)
