@@ -8,11 +8,8 @@ qhapaq()
     chunkayuq d = 2.5
     sananpa letra = 'A'
     qaytu saludo = "Hola, mundo!"
-
     yupay f = a + b
-    
     x = f - 2
-    
     siqiy(a)
-    siqiy("La suma de " + a "+" b + "es " + f)
+    siqiy("La suma de " , a " + " , b , "es " , f)
 }
