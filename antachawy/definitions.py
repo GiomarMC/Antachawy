@@ -49,7 +49,10 @@ class EtiquetasAntachawy:
     CONDICION_ARI = "CONDICION_IF"
     CONDICION_MANA_CHAYQA_ARI = "CONDICION_ELSEIF"
     CONDICION_MANA_CHAYQA = "CONDICION_ELSE"
-    OPERADOR_ARITMETICO = "OPERADOR_ARITMETICO"
+    MAS = "MAS"
+    MENOS = "MENOS"
+    MULTIPLICA = "MULTIPLICA"
+    DIVIDE = "DIVIDE"
     OPERADOR_RACIONAL = "OPERADOR_RACIONAL"
     IMPRESION = "IMPRESION"
     BUCLE_FOR = "BUCLE_FOR"
@@ -91,10 +94,10 @@ lexema_a_etiqueta = {
     LexemasAntachawy.PUNTOYCOMA:        EtiquetasAntachawy.PUNTOYCOMA,
     LexemasAntachawy.YANQA:             EtiquetasAntachawy.TIPO_BOOL,
     LexemasAntachawy.CHIQAQ:            EtiquetasAntachawy.TIPO_BOOL,
-    LexemasAntachawy.MAS:               EtiquetasAntachawy.OPERADOR_ARITMETICO,
-    LexemasAntachawy.MENOS:             EtiquetasAntachawy.OPERADOR_ARITMETICO,
-    LexemasAntachawy.MULTIPLICA:        EtiquetasAntachawy.OPERADOR_ARITMETICO,
-    LexemasAntachawy.DIVIDE:            EtiquetasAntachawy.OPERADOR_ARITMETICO,
+    LexemasAntachawy.MAS:               EtiquetasAntachawy.MAS,
+    LexemasAntachawy.MENOS:             EtiquetasAntachawy.MENOS,
+    LexemasAntachawy.MULTIPLICA:        EtiquetasAntachawy.MULTIPLICA,
+    LexemasAntachawy.DIVIDE:            EtiquetasAntachawy.DIVIDE,
     LexemasAntachawy.MAYOR:             EtiquetasAntachawy.OPERADOR_RACIONAL,
     LexemasAntachawy.MENOR:             EtiquetasAntachawy.OPERADOR_RACIONAL,
     LexemasAntachawy.IGUAL:             EtiquetasAntachawy.OPERADOR_RACIONAL,
@@ -116,123 +119,129 @@ simbolos_compuestos = {
 }
 
 primeros = {
-    "Programa": [LexemasAntachawy.QHAPAQ],
-    "Definicion": [LexemasAntachawy.QHAPAQ],
+    "Programa": [EtiquetasAntachawy.PROGRAMA],
+    "Definicion": [EtiquetasAntachawy.PROGRAMA],
     "ListaSentencias": [
-        LexemasAntachawy.YUPAY,
-        LexemasAntachawy.CHUNKAYUQ,
-        LexemasAntachawy.SANANPA,
-        LexemasAntachawy.QAYTU,
-        LexemasAntachawy.BOOL,
-        LexemasAntachawy.SIQIY,
-        LexemasAntachawy.ID
+        "$",
+        EtiquetasAntachawy.TIPO_YUPAY,
+        EtiquetasAntachawy.TIPO_CHUNKAYUQ,
+        EtiquetasAntachawy.TIPO_SANANPA,
+        EtiquetasAntachawy.TIPO_QAYTU,
+        EtiquetasAntachawy.TIPO_BOOL,
+        EtiquetasAntachawy.IMPRESION,
+        EtiquetasAntachawy.ID
     ],
     "Sentencias": [
-        LexemasAntachawy.YUPAY,
-        LexemasAntachawy.CHUNKAYUQ,
-        LexemasAntachawy.SANANPA,
-        LexemasAntachawy.QAYTU,
-        LexemasAntachawy.BOOL,
-        LexemasAntachawy.SIQIY,
-        LexemasAntachawy.ID
+        EtiquetasAntachawy.TIPO_YUPAY,
+        EtiquetasAntachawy.TIPO_CHUNKAYUQ,
+        EtiquetasAntachawy.TIPO_SANANPA,
+        EtiquetasAntachawy.TIPO_QAYTU,
+        EtiquetasAntachawy.TIPO_BOOL,
+        EtiquetasAntachawy.IMPRESION,
+        EtiquetasAntachawy.ID
     ],
     "Declaraciones": [
-        LexemasAntachawy.YUPAY,
-        LexemasAntachawy.CHUNKAYUQ,
-        LexemasAntachawy.SANANPA,
-        LexemasAntachawy.QAYTU,
-        LexemasAntachawy.BOOL
+        EtiquetasAntachawy.TIPO_YUPAY,
+        EtiquetasAntachawy.TIPO_CHUNKAYUQ,
+        EtiquetasAntachawy.TIPO_SANANPA,
+        EtiquetasAntachawy.TIPO_QAYTU,
+        EtiquetasAntachawy.TIPO_BOOL
     ],
-    "Asignaciones": [LexemasAntachawy.ID],
-    "Impresiones": [LexemasAntachawy.SIQIY],
+    "DeclaracionesPrime": [
+        EtiquetasAntachawy.ASIGNACION,
+        "$",
+    ],
+    "Asignaciones": [EtiquetasAntachawy.ID],
+    "Impresiones": [EtiquetasAntachawy.IMPRESION],
     "Tipo": [
-        LexemasAntachawy.YUPAY,
-        LexemasAntachawy.CHUNKAYUQ,
-        LexemasAntachawy.SANANPA,
-        LexemasAntachawy.QAYTU,
-        LexemasAntachawy.BOOL
+        EtiquetasAntachawy.TIPO_YUPAY,
+        EtiquetasAntachawy.TIPO_CHUNKAYUQ,
+        EtiquetasAntachawy.TIPO_SANANPA,
+        EtiquetasAntachawy.TIPO_QAYTU,
+        EtiquetasAntachawy.TIPO_BOOL
     ],
     "Expresion": [
-        LexemasAntachawy.PAREN_IZQ,
-        LexemasAntachawy.ID,
-        LexemasAntachawy.NUMEROENTERO,
-        LexemasAntachawy.NUMEROFLOTANTE,
-        LexemasAntachawy.CARACTER,
-        LexemasAntachawy.CADENA
+        EtiquetasAntachawy.PAREN_IZQ,
+        EtiquetasAntachawy.ID,
+        EtiquetasAntachawy.NUMEROENTERO,
+        EtiquetasAntachawy.NUMEROFLOTANTE,
+        EtiquetasAntachawy.CARACTER,
+        EtiquetasAntachawy.CADENA
     ],
     "ExpresionPrime": [
-        LexemasAntachawy.MAS,
-        LexemasAntachawy.MENOS,
-        LexemasAntachawy.MULTIPLICA,
-        LexemasAntachawy.DIVIDE
+        "$",
+        EtiquetasAntachawy.MAS,
+        EtiquetasAntachawy.MENOS,
+        EtiquetasAntachawy.MULTIPLICA,
+        EtiquetasAntachawy.DIVIDE
     ],
     "Operador": [
-        LexemasAntachawy.MAS,
-        LexemasAntachawy.MENOS,
-        LexemasAntachawy.MULTIPLICA,
-        LexemasAntachawy.DIVIDE
+        EtiquetasAntachawy.MAS,
+        EtiquetasAntachawy.MENOS,
+        EtiquetasAntachawy.MULTIPLICA,
+        EtiquetasAntachawy.DIVIDE
     ],
     "Termino": [
-        LexemasAntachawy.PAREN_IZQ,
-        LexemasAntachawy.ID,
-        LexemasAntachawy.NUMEROENTERO,
-        LexemasAntachawy.NUMEROFLOTANTE,
-        LexemasAntachawy.CARACTER,
-        LexemasAntachawy.CADENA
+        EtiquetasAntachawy.PAREN_IZQ,
+        EtiquetasAntachawy.ID,
+        EtiquetasAntachawy.NUMEROENTERO,
+        EtiquetasAntachawy.NUMEROFLOTANTE,
+        EtiquetasAntachawy.CARACTER,
+        EtiquetasAntachawy.CADENA
     ],
     "ExpresionImpresion": [
-        LexemasAntachawy.PAREN_IZQ,
-        LexemasAntachawy.ID,
-        LexemasAntachawy.NUMEROENTERO,
-        LexemasAntachawy.NUMEROFLOTANTE,
-        LexemasAntachawy.CARACTER,
-        LexemasAntachawy.CADENA
+        EtiquetasAntachawy.PAREN_IZQ,
+        EtiquetasAntachawy.ID,
+        EtiquetasAntachawy.NUMEROENTERO,
+        EtiquetasAntachawy.NUMEROFLOTANTE,
+        EtiquetasAntachawy.CARACTER,
+        EtiquetasAntachawy.CADENA
     ],
-    "ExpresionImpresionPrime": [LexemasAntachawy.COMA]
+    "ExpresionImpresionPrime": [EtiquetasAntachawy.COMA, "$"]
 }
 
 segundos = {
     "Programa": [],
     "Definicion": [],
-    "ListaSentencias": [LexemasAntachawy.PAREN_DER],
+    "ListaSentencias": [EtiquetasAntachawy.PAREN_DER],
     "Sentencias": [
-        LexemasAntachawy.ID,
-        LexemasAntachawy.YUPAY,
-        LexemasAntachawy.CHUNKAYUQ,
-        LexemasAntachawy.SANANPA,
-        LexemasAntachawy.QAYTU,
-        LexemasAntachawy.BOOL,
-        LexemasAntachawy.SIQIY
+        EtiquetasAntachawy.ID,
+        EtiquetasAntachawy.TIPO_YUPAY,
+        EtiquetasAntachawy.TIPO_CHUNKAYUQ,
+        EtiquetasAntachawy.TIPO_SANANPA,
+        EtiquetasAntachawy.TIPO_QAYTU,
+        EtiquetasAntachawy.TIPO_BOOL,
+        EtiquetasAntachawy.IMPRESION
     ],
-    "Declaraciones": [LexemasAntachawy.SALTO_LINEA],
-    "DeclaracionesPrime": [LexemasAntachawy.SALTO_LINEA],
-    "Asignaciones": [LexemasAntachawy.SALTO_LINEA],
-    "Impresiones": [LexemasAntachawy.SALTO_LINEA],
-    "Tipo": [LexemasAntachawy.ID],
+    "Declaraciones": [EtiquetasAntachawy.SALTO_LINEA],
+    "DeclaracionesPrime": [EtiquetasAntachawy.SALTO_LINEA],
+    "Asignaciones": [EtiquetasAntachawy.SALTO_LINEA],
+    "Impresiones": [EtiquetasAntachawy.SALTO_LINEA],
+    "Tipo": [EtiquetasAntachawy.ID],
     "Expresion": [
-        LexemasAntachawy.PAREN_DER,
-        LexemasAntachawy.COMA,
-        LexemasAntachawy.SALTO_LINEA
+        EtiquetasAntachawy.PAREN_DER,
+        EtiquetasAntachawy.COMA,
+        EtiquetasAntachawy.SALTO_LINEA
     ],
     "ExpresionPrime": [
-        LexemasAntachawy.PAREN_DER,
-        LexemasAntachawy.COMA,
-        LexemasAntachawy.SALTO_LINEA
+        EtiquetasAntachawy.PAREN_DER,
+        EtiquetasAntachawy.COMA,
+        EtiquetasAntachawy.SALTO_LINEA
     ],
     "Operador": [
-        LexemasAntachawy.PAREN_IZQ,
-        LexemasAntachawy.ID,
-        LexemasAntachawy.NUMEROENTERO,
-        LexemasAntachawy.NUMEROFLOTANTE,
-        LexemasAntachawy.CARACTER,
-        LexemasAntachawy.CADENA
+        EtiquetasAntachawy.PAREN_IZQ,
+        EtiquetasAntachawy.ID,
+        EtiquetasAntachawy.NUMEROENTERO,
+        EtiquetasAntachawy.NUMEROFLOTANTE,
+        EtiquetasAntachawy.CARACTER,
+        EtiquetasAntachawy.CADENA
     ],
     "Termino": [
-        LexemasAntachawy.MAS,
-        LexemasAntachawy.MENOS,
-        LexemasAntachawy.MULTIPLICA,
-        LexemasAntachawy.DIVIDE
+        EtiquetasAntachawy.MAS,
+        EtiquetasAntachawy.MENOS,
+        EtiquetasAntachawy.MULTIPLICA,
+        EtiquetasAntachawy.DIVIDE
     ],
-    "ExpresionImpresion": [LexemasAntachawy.PAREN_DER],
-    "ExpresionImpresionPrime": [LexemasAntachawy.PAREN_DER]
+    "ExpresionImpresion": [EtiquetasAntachawy.PAREN_DER],
+    "ExpresionImpresionPrime": [EtiquetasAntachawy.PAREN_DER]
 }
