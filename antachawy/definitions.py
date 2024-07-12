@@ -70,6 +70,8 @@ class EtiquetasAntachawy:
     NUMEROFLOTANTE = "FLOTANTE"
     CARACTER = "CARACTER"
     CADENA = "CADENA"
+    TRUE = "TRUE"
+    FALSE = "FALSE"
     ID = "ID"
 
 lexema_a_etiqueta = {
@@ -78,6 +80,7 @@ lexema_a_etiqueta = {
     LexemasAntachawy.CHUNKAYUQ:         EtiquetasAntachawy.TIPO_CHUNKAYUQ,
     LexemasAntachawy.SANANPA:           EtiquetasAntachawy.TIPO_SANANPA,
     LexemasAntachawy.QAYTU:             EtiquetasAntachawy.TIPO_QAYTU,
+    LexemasAntachawy.BOOL:              EtiquetasAntachawy.TIPO_BOOL,
     LexemasAntachawy.ASIGNA:            EtiquetasAntachawy.ASIGNACION,
     LexemasAntachawy.ARI:               EtiquetasAntachawy.CONDICION_ARI,
     LexemasAntachawy.MANA_CHAYQA_ARI:   EtiquetasAntachawy.CONDICION_MANA_CHAYQA_ARI,
@@ -92,8 +95,8 @@ lexema_a_etiqueta = {
     LexemasAntachawy.PAREN_DER:         EtiquetasAntachawy.PAREN_DER,
     LexemasAntachawy.COMA:              EtiquetasAntachawy.COMA,
     LexemasAntachawy.PUNTOYCOMA:        EtiquetasAntachawy.PUNTOYCOMA,
-    LexemasAntachawy.YANQA:             EtiquetasAntachawy.TIPO_BOOL,
-    LexemasAntachawy.CHIQAQ:            EtiquetasAntachawy.TIPO_BOOL,
+    LexemasAntachawy.YANQA:             EtiquetasAntachawy.TRUE,
+    LexemasAntachawy.CHIQAQ:            EtiquetasAntachawy.FALSE,
     LexemasAntachawy.MAS:               EtiquetasAntachawy.MAS,
     LexemasAntachawy.MENOS:             EtiquetasAntachawy.MENOS,
     LexemasAntachawy.MULTIPLICA:        EtiquetasAntachawy.MULTIPLICA,
@@ -187,7 +190,9 @@ primeros = {
         EtiquetasAntachawy.NUMEROENTERO,
         EtiquetasAntachawy.NUMEROFLOTANTE,
         EtiquetasAntachawy.CARACTER,
-        EtiquetasAntachawy.CADENA
+        EtiquetasAntachawy.CADENA,
+        EtiquetasAntachawy.TRUE,
+        EtiquetasAntachawy.FALSE
     ],
     "ExpresionImpresion": [
         EtiquetasAntachawy.PAREN_IZQ,
@@ -198,50 +203,4 @@ primeros = {
         EtiquetasAntachawy.CADENA
     ],
     "ExpresionImpresionPrime": [EtiquetasAntachawy.COMA, "$"]
-}
-
-segundos = {
-    "Programa": [],
-    "Definicion": [],
-    "ListaSentencias": [EtiquetasAntachawy.PAREN_DER],
-    "Sentencias": [
-        EtiquetasAntachawy.ID,
-        EtiquetasAntachawy.TIPO_YUPAY,
-        EtiquetasAntachawy.TIPO_CHUNKAYUQ,
-        EtiquetasAntachawy.TIPO_SANANPA,
-        EtiquetasAntachawy.TIPO_QAYTU,
-        EtiquetasAntachawy.TIPO_BOOL,
-        EtiquetasAntachawy.IMPRESION
-    ],
-    "Declaraciones": [EtiquetasAntachawy.SALTO_LINEA],
-    "DeclaracionesPrime": [EtiquetasAntachawy.SALTO_LINEA],
-    "Asignaciones": [EtiquetasAntachawy.SALTO_LINEA],
-    "Impresiones": [EtiquetasAntachawy.SALTO_LINEA],
-    "Tipo": [EtiquetasAntachawy.ID],
-    "Expresion": [
-        EtiquetasAntachawy.PAREN_DER,
-        EtiquetasAntachawy.COMA,
-        EtiquetasAntachawy.SALTO_LINEA
-    ],
-    "ExpresionPrime": [
-        EtiquetasAntachawy.PAREN_DER,
-        EtiquetasAntachawy.COMA,
-        EtiquetasAntachawy.SALTO_LINEA
-    ],
-    "Operador": [
-        EtiquetasAntachawy.PAREN_IZQ,
-        EtiquetasAntachawy.ID,
-        EtiquetasAntachawy.NUMEROENTERO,
-        EtiquetasAntachawy.NUMEROFLOTANTE,
-        EtiquetasAntachawy.CARACTER,
-        EtiquetasAntachawy.CADENA
-    ],
-    "Termino": [
-        EtiquetasAntachawy.MAS,
-        EtiquetasAntachawy.MENOS,
-        EtiquetasAntachawy.MULTIPLICA,
-        EtiquetasAntachawy.DIVIDE
-    ],
-    "ExpresionImpresion": [EtiquetasAntachawy.PAREN_DER],
-    "ExpresionImpresionPrime": [EtiquetasAntachawy.PAREN_DER]
 }
