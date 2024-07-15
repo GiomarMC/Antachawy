@@ -1,7 +1,7 @@
 from antachawy.scanner import Scanner
 from antachawy.token import Token
 from antachawy.consolehandler import ConsoleHandler
-from antachawy.parser import RecursiveDescentParser, render_tree, export_tree
+from antachawy.parser import RecursiveDescentParser
 
 import typer
 from pathlib import Path
@@ -21,8 +21,5 @@ def main(file_path: Path = typer.Argument("./inputs/main.awy", help="Archivo de 
     console_handler.scan_debug_table(tokens)
     console_handler.show_errors(scanner.errors)
     tree = parser.parse()
-    render_tree(tree)
-    export_tree(tree, "Abstract_Syntax_Tree.png")
-
 if __name__ == "__main__":
     typer.run(main)
