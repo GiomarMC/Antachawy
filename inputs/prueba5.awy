@@ -1,0 +1,9 @@
+qhapaq () 
+{
+    yupay a = 1
+    yupay b = 2
+    yupay c
+    c = a * b
+    sananpa letra = 'A'
+    siqiy ("La suma de ", a, " + ", b, " es ", c)
+}
