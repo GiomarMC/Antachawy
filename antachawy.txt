@@ -22,7 +22,9 @@ Termino -> ( Expresion )
 	| numero
 	| flotante
 	| caracter
-	| cadena .
+	| cadena 
+	| chinqaq
+    | yanqa .
 ExpresionImpresion -> Expresion ExpresionImpresionPrime .
 ExpresionImpresionPrime -> coma ExpresionImpresion
 			| ε .
