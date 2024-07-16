@@ -169,18 +169,35 @@ primeros = {
         EtiquetasAntachawy.NUMEROENTERO,
         EtiquetasAntachawy.NUMEROFLOTANTE,
         EtiquetasAntachawy.CARACTER,
-        EtiquetasAntachawy.CADENA
+        EtiquetasAntachawy.CADENA,
+        EtiquetasAntachawy.TRUE,
+        EtiquetasAntachawy.FALSE
     ],
-    "ExpresionPrime": [
-        "$",
-        EtiquetasAntachawy.MAS,
-        EtiquetasAntachawy.MENOS,
-        EtiquetasAntachawy.MULTIPLICA,
-        EtiquetasAntachawy.DIVIDE
+    "ExpresionAditiva": [
+        EtiquetasAntachawy.PAREN_IZQ,
+        EtiquetasAntachawy.ID,
+        EtiquetasAntachawy.NUMEROENTERO,
+        EtiquetasAntachawy.NUMEROFLOTANTE,
+        EtiquetasAntachawy.CARACTER,
+        EtiquetasAntachawy.CADENA,
+        EtiquetasAntachawy.TRUE,
+        EtiquetasAntachawy.FALSE
     ],
-    "Operador": [
+    "ExpresionMultiplicativa": [
+        EtiquetasAntachawy.PAREN_IZQ,
+        EtiquetasAntachawy.ID,
+        EtiquetasAntachawy.NUMEROENTERO,
+        EtiquetasAntachawy.NUMEROFLOTANTE,
+        EtiquetasAntachawy.CARACTER,
+        EtiquetasAntachawy.CADENA,
+        EtiquetasAntachawy.TRUE,
+        EtiquetasAntachawy.FALSE
+    ],
+    "OperadorAditivo": [
         EtiquetasAntachawy.MAS,
-        EtiquetasAntachawy.MENOS,
+        EtiquetasAntachawy.MENOS
+    ],
+    "OperadorMultiplicativo": [
         EtiquetasAntachawy.MULTIPLICA,
         EtiquetasAntachawy.DIVIDE
     ],
@@ -200,7 +217,9 @@ primeros = {
         EtiquetasAntachawy.NUMEROENTERO,
         EtiquetasAntachawy.NUMEROFLOTANTE,
         EtiquetasAntachawy.CARACTER,
-        EtiquetasAntachawy.CADENA
+        EtiquetasAntachawy.CADENA,
+        EtiquetasAntachawy.TRUE,
+        EtiquetasAntachawy.FALSE
     ],
     "ExpresionImpresionPrime": [EtiquetasAntachawy.COMA, "$"]
 }
