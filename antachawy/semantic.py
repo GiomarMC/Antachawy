@@ -1,5 +1,5 @@
 from antachawy.symboltable import SymbolTable
-from antachawy.definitions import EtiquetasAntachawy
+from antachawy.definitions import EtiquetasAntachawy, primeros
 from anytree import Node
 
 class SemanticError:
@@ -11,95 +11,120 @@ class SemanticError:
         return f"Error en línea {self.line}: {self.message}"
 
 class SemanticAnalyzer:
-    def __init__(self, root: Node):
-        self.root = root
+    def __init__(self):
         self.symbol_table = SymbolTable()
         self.errors = []
 
-    def analyze(self):
-        self.visit(self.root)
-        return self.errors
+    def visit(self, node):
+        if node.name == "Programa":
+            self.visit_programa(node)
+        elif node.name == "Definicion":
+            self.visit_definicion(node)
+        elif node.name == "ListaSentencias":
+            self.visit_lista_sentencias(node)
+        elif node.name == "Sentencias":
+            self.visit_sentencias(node)
+        elif node.name == "Declaraciones":
+            self.visit_declaraciones(node)
+        elif node.name == "Asignaciones":
+            self.visit_asignaciones(node)
+        elif node.name == "Expresion":
+            return self.visit_expresion(node)
+        elif node.name == "ExpresionMultiplicativa":
+            return self.visit_expresion_multiplicativa(node)
+        elif node.name == "ExpresionAditivaPrime":
+            return self.visit_expresion_aditiva_prime(node)
+        elif node.name == "ExpresionMultiplicativaPrime":
+            return self.visit_expresion_multiplicativa_prime(node)
+        elif node.name == "Termino":
+            return self.visit_termino(node)
+        elif node.name == "Tipo":
+            return self.visit_tipo(node)
+        return None
 
-    def visit(self, node: Node):
-        method_name = f"visit_{node.name.lower()}"
-        visitor = getattr(self, method_name, self.generic_visit)
-        visitor(node)
-
-    def generic_visit(self, node: Node):
+    def visit_programa(self, node):
         for child in node.children:
             self.visit(child)
 
-    def visit_definicion(self, node: Node):
-        self.visit(node.children[0])  # Visitamos ListaSentencias
-
-    def visit_lista_sentencias(self, node: Node):
+    def visit_definicion(self, node):
         for child in node.children:
             self.visit(child)
 
-    def visit_sentencias(self, node: Node):
-        if node.children[0].name == "Declaraciones":
-            self.visit(node.children[0])
-        elif node.children[0].name == "Asignaciones":
-            self.visit(node.children[0])
-        elif node.children[0].name == "Impresiones":
-            self.visit(node.children[0])
+    def visit_lista_sentencias(self, node):
+        for child in node.children:
+            self.visit(child)
+
+    def visit_sentencias(self, node):
+        for child in node.children:
+            self.visit(child)
 
     def visit_declaraciones(self, node):
-        tipo_node = node.children[0]  # Tipo
-        id_node = node.children[1]    # ID
-        if tipo_node and id_node:
-            tipo = tipo_node.name
-            var_name = id_node.name
-            print(f"Agregando variable '{var_name}' de tipo '{tipo}' a la tabla de símbolos.")
-            try:
-                self.symbol_table.add(var_name, tipo)
-            except ValueError as e:
-                self.errors.append(str(e))
+        tipo = self.visit(node.children[0])
+        nombre = node.children[1].children[0].name
+        try:
+            self.symbol_table.add(nombre, tipo)
+        except Exception as e:
+            self.errors.append(e)
+        if len(node.children) > 2:
+            self.visit(node.children[2])
 
-    def visit_declaracionesprime(self, node: Node):
+    def visit_asignaciones(self, node):
+        nombre = node.children[0].children[0].name
+        expresion_tipo = self.visit(node.children[2])
+        tipo = self.symbol_table.get(nombre)
+        if tipo is None:
+            self.errors.append(f"Error: Variable '{nombre}' no declarada.")
+        
+        if tipo != expresion_tipo:
+            self.errors.append(f"Error de tipo: Variable '{nombre}' es de tipo '{tipo}' y la expresión es de tipo '{expresion_tipo}'.")
+
+    def visit_expresion(self, node):
+        return self.visit(node.children[0])
+
+    def visit_expresion_multiplicativa(self, node):
+        return self.visit(node.children[0])
+    
+    def visit_expresion_aditiva_prime(self, node):
         if node.children:
-            self.visit(node.children[0])  # ASIGNACION
-            self.visit(node.children[1])  # Expresion
-
-    def visit_asignaciones(self, node: Node):
-        id_name = node.children[0].name
-        if self.symbol_table.get(id_name) is None:
-            self.errors.append(SemanticError(f"Variable '{id_name}' no definida.", node.line))
-        self.visit(node.children[2])  # Expresion
-
-    def visit_impresiones(self, node: Node):
-        self.visit(node.children[1])  # ExpresionImpresion
-
-    def visit_expresion(self, node: Node):
-        self.visit(node.children[0])  # ExpresionMultiplicativa
-        self.visit(node.children[1])  # ExpresionAditivaPrime
-
-    def visit_expresionaditiva_prime(self, node: Node):
+            left_type = self.visit(node.children[1])
+            right_type = self.visit(node.children[2])
+            if left_type != right_type:
+                self.errors.append(f"Error de tipo: operación entre tipos '{left_type}' y '{right_type}' no permitida.")
+            return left_type
+    def visit_expresion_multiplicativa_prime(self, node):
         if node.children:
-            self.visit(node.children[0])  # OperadorAditivo
-            self.visit(node.children[1])  # ExpresionMultiplicativa
-            self.visit(node.children[2])  # ExpresionAditivaPrime
+            left_type = self.visit(node.children[1])
+            right_type = self.visit(node.children[2])
+            if left_type != right_type:
+                self.errors.append(f"Error de tipo: operación entre tipos '{left_type}' y '{right_type}' no permitida.")
+            return left_type
+        
+    def visit_termino(self, node):
+        child = node.children[0]
+        if child.name == "ID":
+            var_name = child.children[0].name
+            var_type = self.symbol_table.get(var_name)
+            if var_type is None:
+                self.errors.append(f"Error: variable '{var_name}' no está definida.")
+            return var_type
+        elif child.name == "ENTERO":
+            return "yupay"
+        elif child.name == "FLOTANTE":
+            return "chunkayuq"
+        elif child.name == "TRUE" or child.name == "FALSE":
+            return "bool"
+        elif child.name == "CARACTER":
+            return "sananpa"
+        elif child.name == "CADENA":
+            return "qaytu"
+    
+    def visit_tipo(self, node):
+        return node.children[0].name
 
-    def visit_expresionmultiplicativa(self, node: Node):
-        self.visit(node.children[0])  # Termino
-        self.visit(node.children[1])  # ExpresionMultiplicativaPrime
-
-    def visit_expresionmultiplicativa_prime(self, node: Node):
-        if node.children:
-            self.visit(node.children[0])  # OperadorMultiplicativo
-            self.visit(node.children[1])  # Termino
-            self.visit(node.children[2])  # ExpresionMultiplicativaPrime
-
-    def visit_termino(self, node: Node):
-        if node.children[0].name == "Expresion":
-            self.visit(node.children[0])  # Expresion
-        # En caso de ID o ENTERO se puede verificar aquí si es válido según el contexto
-
-    def visit_expresionimpresion(self, node: Node):
-        self.visit(node.children[0])  # Expresion
-        self.visit(node.children[1])  # ExpresionImpresionPrime
-
-    def visit_expresionimpresionprime(self, node: Node):
-        if node.children:
-            self.visit(node.children[0])  # COMA
-            self.visit(node.children[1])  # ExpresionImpresion
+    def analyze(self, root):
+        self.visit(root)
+        if not self.errors:
+            print("--> Semantic Analysis Passed")
+        else:
+            print("--> Semantic Analysis Failed")
+        self.symbol_table.print_table()
