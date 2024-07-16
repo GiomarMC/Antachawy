@@ -51,11 +51,6 @@ class RecursiveDescentParser:
             self.current_token = self.tokens[self.current_token_idx]
         else:
             self.current_token = None
-            self.errors.append({
-                "mensaje": "Fin de archivo inesperado",
-                "linea": self.tokens[-1].linea,
-                "Contenido": self.tokens[-1].lexema
-            })
 
     def consume(self, expected_tag, parent: Node):
         if self.current_token is not None and self.current_token.etiqueta == expected_tag:
@@ -129,10 +124,6 @@ class RecursiveDescentParser:
             node_sentencia.parent = node
             node_lista_sentencias = self.lista_sentencias()
             node_lista_sentencias.parent = node
-        else:
-            mensaje = f"Token inesperado '{self.current_token.etiqueta}'"
-            self.panic_mode(mensaje, EtiquetasAntachawy.LLAVE_DER, parent=node)
-
         return node
     
     def sentencias(self):
@@ -213,9 +204,6 @@ class RecursiveDescentParser:
             node_termino.parent = node
             node_expresion_prime = self.expresion_prime()
             node_expresion_prime.parent = node
-        else:
-            mensaje = f"Token inesperado '{self.current_token.etiqueta}'"
-            self.panic_mode(mensaje, EtiquetasAntachawy.SALTO_LINEA, parent=node)
         return node
     
     def operador(self):
@@ -263,7 +251,4 @@ class RecursiveDescentParser:
             self.consume(EtiquetasAntachawy.COMA, node)
             node_expresion_impresion = self.expresion_impresion()
             node_expresion_impresion.parent = node
-        else:
-            mensaje = f"Token inesperado '{self.current_token.etiqueta}'"
-            self.panic_mode(mensaje, EtiquetasAntachawy.SALTO_LINEA, parent=node)
         return node
