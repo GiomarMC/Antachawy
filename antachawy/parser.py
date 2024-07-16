@@ -28,18 +28,35 @@ class RecursiveDescentParser:
         self.root = self.programa()
 
         if self.current_token is not None:
-            raise SyntaxError(f"Token inesperado '{self.current_token.lexema}' en la línea {self.current_token.linea}")
+            self.errors.append({
+                "mensaje": f"Token inesperado '{self.current_token.lexema}'",
+                "linea": self.current_token.linea,
+                "Contenido": self.current_token.lexema
+            })
         
+        render_tree(self.root)
+        export_tree(self.root,"AbstracSyntaxTree")
+
         if not self.errors:
-            render_tree(self.root)
             print("-->Accepted Program")
-            export_tree(self.root,"AbstracSyntaxTree")
         else:
             print("-->Rejected Program")
             for error in self.errors:
-                print(f"Error en la línea {error['linea']}: {error['mensaje']}")    
+                print(f"Error en la línea {error['linea']}: {error['mensaje']}")
         return self.root
     
+    def next_token(self):
+        self.current_token_idx += 1
+        if self.current_token_idx < len(self.tokens):
+            self.current_token = self.tokens[self.current_token_idx]
+        else:
+            self.current_token = None
+            self.errors.append({
+                "mensaje": "Fin de archivo inesperado",
+                "linea": self.tokens[-1].linea,
+                "Contenido": self.tokens[-1].lexema
+            })
+
     def consume(self, expected_tag, parent: Node):
         if self.current_token is not None and self.current_token.etiqueta == expected_tag:
             if self.current_token.etiqueta == EtiquetasAntachawy.SALTO_LINEA:
@@ -50,31 +67,39 @@ class RecursiveDescentParser:
                 Node(self.current_token.lexema[1:-1], parent=parent)
             else:
                 Node(self.current_token.lexema, parent=parent)
-            self.current_token_idx += 1
-            if self.current_token_idx < len(self.tokens):
-                self.current_token = self.tokens[self.current_token_idx]
-            else:
-                self.current_token = None
+            self.next_token()
+            if self.current_token is None:
+                return
         else:
+            if self.current_token is not None:
+                mensaje = f"Token inesperado '{self.current_token.etiqueta}' se esperaba '{expected_tag}' en la línea {self.current_token.linea}"
+                print(mensaje)  
+                self.panic_mode(mensaje,EtiquetasAntachawy.SALTO_LINEA, parent=parent)
+            else:
+                mensaje = f"Se esperaba '{expected_tag}' al final del archivo"
+                print(mensaje)
+                self.panic_mode(mensaje, None, parent=parent)
+        
+    def panic_mode(self, mensaje, *expected_tags, parent: Node):
+        Node('ERROR', parent=parent)
+
+        if mensaje and self.current_token is not None:
             self.errors.append({
-                "mensaje": f"Token inesperado '{self.current_token.lexema}'",
-                "linea": self.current_token.linea
+                "mensaje": mensaje,
+                "linea": self.current_token.linea,
+                "Contenido": self.current_token.lexema
             })
-            self.panic_mode(expected_tag)
+
+        if not expected_tags:
+            self.errors.append({
+                "mensaje": mensaje,
+                "linea": self.tokens[-1].linea,
+                "Contenido": self.tokens[-1].lexema
+            })
+            return
         
-    def panic_mode(self, *expected_tags):
-        print(f"Entrando en modo pánico. Tokens esperados: {expected_tags}. Token actual: {self.current_token.etiqueta if self.current_token else 'None'} en la línea {self.current_token.linea if self.current_token else 'N/A'}")
         while self.current_token is not None and self.current_token.etiqueta not in expected_tags:
-            self.current_token_idx += 1
-            if self.current_token_idx < len(self.tokens):
-                self.current_token = self.tokens[self.current_token_idx]
-            else:
-                self.current_token = None
-        
-        if self.current_token is None:
-            print("No se encontraron tokens esperados. Finalizando análisis sintáctico.")
-        else:
-            print(f"Token encontrado: {self.current_token.etiqueta} en la línea {self.current_token.linea}")
+            self.next_token()
     
     def programa(self):
         node = Node("Programa")
@@ -83,34 +108,31 @@ class RecursiveDescentParser:
         return node
     
     def definicion(self):
-        try:
-            node = Node("Definicion")
-            self.consume(EtiquetasAntachawy.PROGRAMA, node)
-            self.consume(EtiquetasAntachawy.PAREN_IZQ, node)
-            self.consume(EtiquetasAntachawy.PAREN_DER, node)
-            self.consume(EtiquetasAntachawy.SALTO_LINEA, node)
-            self.consume(EtiquetasAntachawy.LLAVE_IZQ, node)
-            self.consume(EtiquetasAntachawy.SALTO_LINEA, node)
-            node_lista_sentencias = self.lista_sentencias()
-            node_lista_sentencias.parent = node
-            self.consume(EtiquetasAntachawy.LLAVE_DER, node)
-        except SyntaxError:
-            self.errors.append({
-                "mensaje": "Error en la definición del programa",
-                "linea": self.current_token.linea
-            })
-            error_node = Node("Error")
-            error_node.children = [error_node]
-            self.panic_mode(EtiquetasAntachawy.SALTO_LINEA, EtiquetasAntachawy.LLAVE_DER)
+        node = Node("Definicion")
+        self.consume(EtiquetasAntachawy.PROGRAMA,node)
+        self.consume(EtiquetasAntachawy.PAREN_IZQ,node)
+        self.consume(EtiquetasAntachawy.PAREN_DER,node)
+        self.consume(EtiquetasAntachawy.SALTO_LINEA,node)
+        self.consume(EtiquetasAntachawy.LLAVE_IZQ,node)
+        self.consume(EtiquetasAntachawy.SALTO_LINEA,node)
+        node_lista_sentencias = self.lista_sentencias()
+        node_lista_sentencias.parent = node
+        self.consume(EtiquetasAntachawy.LLAVE_DER,node)
         return node
     
     def lista_sentencias(self):
         node = Node("ListaSentencias")
+        if self.current_token is None:
+            return node
         if self.current_token.etiqueta in primeros["ListaSentencias"]:
             node_sentencia = self.sentencias()
             node_sentencia.parent = node
             node_lista_sentencias = self.lista_sentencias()
             node_lista_sentencias.parent = node
+        else:
+            mensaje = f"Token inesperado '{self.current_token.etiqueta}'"
+            self.panic_mode(mensaje, EtiquetasAntachawy.LLAVE_DER, parent=node)
+
         return node
     
     def sentencias(self):
@@ -124,14 +146,6 @@ class RecursiveDescentParser:
         elif self.current_token.etiqueta in primeros["Impresiones"]:
             node_impresion = self.impresion()
             node_impresion.parent = node
-        else:
-            self.errors.append({
-                "mensaje": f"Token inesperado '{self.current_token.lexema}'",
-                "linea": self.current_token.linea
-            })
-            self.panic_mode(EtiquetasAntachawy.SALTO_LINEA)
-            error_node = Node("Error")
-            error_node.children = [error_node]
         self.consume(EtiquetasAntachawy.SALTO_LINEA, node)
         return node
     
@@ -177,18 +191,9 @@ class RecursiveDescentParser:
     
     def tipo(self):
         node = Node("Tipo")
-        if self.current_token.etiqueta in primeros["Tipo"]:
-            node_tipo = Node(self.current_token.etiqueta)
-            Node(self.current_token.lexema, parent=node_tipo)
-            self.consume(self.current_token.etiqueta, node)
-        else:
-            self.errors.append({
-                "mensaje": f"Token inesperado '{self.current_token.lexema}'",
-                "linea": self.current_token.linea
-            })
-            self.panic_mode(EtiquetasAntachawy.ID)
-            error_node = Node("Error")
-            error_node.children = [error_node]
+        node_tipo = Node(self.current_token.etiqueta)
+        Node(self.current_token.lexema, parent=node_tipo)
+        self.consume(self.current_token.etiqueta, node)
         return node
     
     def expresion(self):
@@ -208,22 +213,20 @@ class RecursiveDescentParser:
             node_termino.parent = node
             node_expresion_prime = self.expresion_prime()
             node_expresion_prime.parent = node
+        else:
+            mensaje = f"Token inesperado '{self.current_token.etiqueta}'"
+            self.panic_mode(mensaje, EtiquetasAntachawy.SALTO_LINEA, parent=node)
         return node
     
     def operador(self):
         node = Node("Operador")
         if self.current_token.etiqueta in primeros["Operador"]:
             node_operador = Node(self.current_token.etiqueta)
-            Node(self.current_token.lexema, parent=node_operador)
-            self.consume(self.current_token.etiqueta, node)
+            node_operador.parent = node
+            self.consume(self.current_token.etiqueta, node_operador)
         else:
-            self.errors.append({
-                "mensaje": f"Token inesperado '{self.current_token.lexema}'",
-                "linea": self.current_token.linea
-            })
-            self.panic_mode(EtiquetasAntachawy.SALTO_LINEA)
-            error_node = Node("Error")
-            error_node.children = [error_node]
+            mensaje = f"Token inesperado '{self.current_token.etiqueta}'"
+            self.panic_mode(mensaje, EtiquetasAntachawy.SALTO_LINEA, parent=node)
         return node
     
     def termino(self):
@@ -240,13 +243,8 @@ class RecursiveDescentParser:
                 self.consume(self.current_token.etiqueta, node_termino)
 
         else:
-            self.errors.append({
-                "mensaje": f"Token inesperado '{self.current_token.lexema}'",
-                "linea": self.current_token.linea
-            })
-            self.panic_mode(EtiquetasAntachawy.SALTO_LINEA)
-            error_node = Node("Error")
-            error_node.children = [error_node]
+            mensaje = f"Token inesperado '{self.current_token.etiqueta}'"
+            self.panic_mode(mensaje, EtiquetasAntachawy.SALTO_LINEA, parent=node)
         return node
     
     def expresion_impresion(self):
@@ -259,8 +257,13 @@ class RecursiveDescentParser:
     
     def expresion_impresion_prime(self):
         node = Node("ExpresionImpresionPrime")
+        if self.current_token is None:
+            return node
         if self.current_token.etiqueta in primeros["ExpresionImpresionPrime"]:
             self.consume(EtiquetasAntachawy.COMA, node)
             node_expresion_impresion = self.expresion_impresion()
             node_expresion_impresion.parent = node
+        else:
+            mensaje = f"Token inesperado '{self.current_token.etiqueta}'"
+            self.panic_mode(mensaje, EtiquetasAntachawy.SALTO_LINEA, parent=node)
         return node
