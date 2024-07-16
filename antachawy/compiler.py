@@ -32,8 +32,10 @@ class Compiler:
             return False
         
         print("--> Syntax Analysis Passed")
-        analyzer = SemanticAnalyzer(tree)
-        analyzer.analyze()
-        table = SymbolTable()
-        table.print_table()
+        analyzer = SemanticAnalyzer()
+        analyzer.analyze(tree)
+        if analyzer.errors:
+            for error in analyzer.errors:
+                print(error)
+            return False
         return True
