@@ -1,7 +1,7 @@
 qhapaq()
 {
-    int x
+    yupay x
     bool flag
     x = flag
-    int result = x + 10
+    yupay result = x + 10
 }
