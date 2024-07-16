@@ -41,8 +41,6 @@ class RecursiveDescentParser:
             print("-->Accepted Program")
         else:
             print("-->Rejected Program")
-            for error in self.errors:
-                print(f"Error en la línea {error['linea']}: {error['mensaje']}")
         return self.root
     
     def next_token(self):
@@ -68,11 +66,9 @@ class RecursiveDescentParser:
         else:
             if self.current_token is not None:
                 mensaje = f"Token inesperado '{self.current_token.etiqueta}' se esperaba '{expected_tag}'"
-                print(mensaje)  
                 self.panic_mode(mensaje,EtiquetasAntachawy.SALTO_LINEA, parent=parent)
             else:
                 mensaje = f"Se esperaba '{expected_tag}' al final del archivo"
-                print(mensaje)
                 self.panic_mode(mensaje, None, parent=parent)
         
     def panic_mode(self, mensaje, *expected_tags, parent: Node):
@@ -189,32 +185,54 @@ class RecursiveDescentParser:
     
     def expresion(self):
         node = Node("Expresion")
+        node_expresion_multiplicativa = self.expresion_multiplicativa()
+        node_expresion_multiplicativa.parent = node
+        node_expresion_aditiva_prime = self.expresion_aditiva_prime()
+        node_expresion_aditiva_prime.parent = node
+        return node
+    
+    def expresion_aditiva_prime(self):
+        node = Node("ExpresionAditivaPrime")
+        if self.current_token.etiqueta in primeros["OperadorAditivo"]:
+            node_operador_aditivo = self.operador_aditivo()
+            node_operador_aditivo.parent = node
+            node_expresion_multiplicativa = self.expresion_multiplicativa()
+            node_expresion_multiplicativa.parent = node
+            node_expresion_aditiva_prime = self.expresion_aditiva_prime()
+            node_expresion_aditiva_prime.parent = node
+        return node
+    
+    def expresion_multiplicativa(self):
+        node = Node("ExpresionMultiplicativa")
         node_termino = self.termino()
         node_termino.parent = node
-        node_expresion_prime = self.expresion_prime()
-        node_expresion_prime.parent = node
+        node_expresion_multiplicativa_prime = self.expresion_multiplicativa_prime()
+        node_expresion_multiplicativa_prime.parent = node
         return node
     
-    def expresion_prime(self):
-        node = Node("ExpresionPrime")
-        if self.current_token.etiqueta in primeros["ExpresionPrime"]:
-            node_operador = self.operador()
-            node_operador.parent = node
+    def expresion_multiplicativa_prime(self):
+        node = Node("ExpresionMultiplicativaPrime")
+        if self.current_token.etiqueta in primeros["OperadorMultiplicativo"]:
+            node_operador_multiplicativo = self.operador_multiplicativo()
+            node_operador_multiplicativo.parent = node
             node_termino = self.termino()
             node_termino.parent = node
-            node_expresion_prime = self.expresion_prime()
-            node_expresion_prime.parent = node
+            node_expresion_multiplicativa_prime = self.expresion_multiplicativa_prime()
+            node_expresion_multiplicativa_prime.parent = node
         return node
     
-    def operador(self):
-        node = Node("Operador")
-        if self.current_token.etiqueta in primeros["Operador"]:
-            node_operador = Node(self.current_token.etiqueta)
-            node_operador.parent = node
-            self.consume(self.current_token.etiqueta, node_operador)
-        else:
-            mensaje = f"Token inesperado '{self.current_token.etiqueta}'"
-            self.panic_mode(mensaje, EtiquetasAntachawy.SALTO_LINEA, parent=node)
+    def operador_aditivo(self):
+        node = Node("OperadorAditivo")
+        node_aditivo = Node(self.current_token.etiqueta)
+        Node(self.current_token.lexema, parent=node_aditivo)
+        self.consume(self.current_token.etiqueta, node)
+        return node
+    
+    def operador_multiplicativo(self):
+        node = Node("OperadorMultiplicativo")
+        node_multiplicativo = Node(self.current_token.etiqueta)
+        Node(self.current_token.lexema, parent=node_multiplicativo)
+        self.consume(self.current_token.etiqueta, node)
         return node
     
     def termino(self):
