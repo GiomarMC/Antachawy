@@ -3,6 +3,6 @@ qhapaq ()
     yupay a = 1
     yupay b = 2
     yupay c
-    c = a * b
+    c = 10 / a + 8 * 3
     siqiy ( c )
 }
