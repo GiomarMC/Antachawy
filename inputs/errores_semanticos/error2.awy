@@ -1,0 +1,7 @@
+qhapaq()
+{
+    int x
+    bool flag
+    x = flag
+    int result = x + 10
+}
