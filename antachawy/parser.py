@@ -31,7 +31,7 @@ class RecursiveDescentParser:
             self.errors.append({
                 "mensaje": f"Token inesperado '{self.current_token.lexema}'",
                 "linea": self.current_token.linea,
-                "Contenido": self.current_token.lexema
+                "contenido": self.current_token.lexema
             })
         
         render_tree(self.root)
@@ -67,7 +67,7 @@ class RecursiveDescentParser:
                 return
         else:
             if self.current_token is not None:
-                mensaje = f"Token inesperado '{self.current_token.etiqueta}' se esperaba '{expected_tag}' en la línea {self.current_token.linea}"
+                mensaje = f"Token inesperado '{self.current_token.etiqueta}' se esperaba '{expected_tag}'"
                 print(mensaje)  
                 self.panic_mode(mensaje,EtiquetasAntachawy.SALTO_LINEA, parent=parent)
             else:
@@ -82,14 +82,14 @@ class RecursiveDescentParser:
             self.errors.append({
                 "mensaje": mensaje,
                 "linea": self.current_token.linea,
-                "Contenido": self.current_token.lexema
+                "contenido": self.current_token.lexema
             })
 
         if not expected_tags:
             self.errors.append({
                 "mensaje": mensaje,
                 "linea": self.tokens[-1].linea,
-                "Contenido": self.tokens[-1].lexema
+                "contenido": self.tokens[-1].lexema
             })
             return
         
