@@ -1,7 +1,4 @@
-from antachawy.scanner import Scanner
-from antachawy.token import Token
-from antachawy.consolehandler import ConsoleHandler
-from antachawy.parser import RecursiveDescentParser
+from antachawy.compiler import Compiler
 
 import typer
 from pathlib import Path
@@ -13,13 +10,12 @@ def file_exists(path: str):
     return file_path
 
 def main(file_path: Path = typer.Argument("./inputs/main.awy", help="Archivo de entrada con codigo fuente", callback=file_exists)):
-    scanner = Scanner()
-    tokens = scanner.tokenize(str(file_path))
-    parser = RecursiveDescentParser(scanner)
-    console_handler = ConsoleHandler()
-    console_handler.print_title()
-    console_handler.scan_debug_table(tokens)
-    console_handler.show_errors(scanner.errors)
-    tree = parser.parse()
+    compiler = Compiler(file_path)
+    resutl = compiler.compile()
+    if resutl:
+        print("Compilación exitosa")
+    else:
+        print("Compilación fallida")
+
 if __name__ == "__main__":
     typer.run(main)
