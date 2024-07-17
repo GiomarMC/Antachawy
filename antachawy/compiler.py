@@ -2,6 +2,7 @@ from antachawy.scanner import Scanner
 from antachawy.parser import RecursiveDescentParser
 from antachawy.consolehandler import ConsoleHandler
 from antachawy.semantic import SemanticAnalyzer
+from antachawy.intermediate import IntermediateCodeGenerator
 
 class Compiler:
     def __init__(self, source_code: str):
@@ -31,10 +32,18 @@ class Compiler:
             return False
         
         print("--> Syntax Analysis Passed")
+
         analyzer = SemanticAnalyzer()
         analyzer.analyze(tree)
         if analyzer.errors:
             for error in analyzer.errors:
                 print(error)
             return False
+        
+        print("--> Semantic Analysis Passed")
+        generator = IntermediateCodeGenerator()
+        intermediate_code = generator.generate(tree)
+        for instruction in intermediate_code:
+            print(instruction)
+
         return True
