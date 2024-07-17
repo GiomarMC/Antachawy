@@ -1,6 +1,4 @@
 from antachawy.symboltable import SymbolTable
-from antachawy.definitions import EtiquetasAntachawy, primeros
-from anytree import Node
 
 class SemanticError:
     def __init__(self, message, line):
@@ -14,6 +12,7 @@ class SemanticAnalyzer:
     def __init__(self):
         self.symbol_table = SymbolTable()
         self.errors = []
+        self.current_scope = "global"
 
     def visit(self, node):
         if node.name == "Programa":
@@ -47,8 +46,10 @@ class SemanticAnalyzer:
             self.visit(child)
 
     def visit_definicion(self, node):
+        self.current_scope = "local"
         for child in node.children:
             self.visit(child)
+        self.current_scope = "global"
 
     def visit_lista_sentencias(self, node):
         for child in node.children:
@@ -62,7 +63,7 @@ class SemanticAnalyzer:
         tipo = self.visit(node.children[0])
         nombre = node.children[1].children[0].name
         try:
-            self.symbol_table.add(nombre, tipo)
+            self.symbol_table.add(nombre, tipo, self.current_scope)
         except Exception as e:
             self.errors.append(e)
         if len(node.children) > 2:
