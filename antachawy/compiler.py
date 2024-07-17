@@ -2,7 +2,6 @@ from antachawy.scanner import Scanner
 from antachawy.parser import RecursiveDescentParser
 from antachawy.consolehandler import ConsoleHandler
 from antachawy.semantic import SemanticAnalyzer
-from antachawy.symboltable import SymbolTable
 
 class Compiler:
     def __init__(self, source_code: str):
