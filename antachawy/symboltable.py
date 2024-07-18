@@ -1,3 +1,5 @@
+from tabulate import tabulate
+
 class SymbolTable:
     def __init__(self):
         self.symbols = {}
@@ -11,34 +13,54 @@ class SymbolTable:
         if name in self.symbols:
             return self.symbols[name]["type"]
         return None
-    
+
     def get_value(self, name):
         if name in self.symbols:
             return self.symbols[name]["value"]
         return None
-    
+
     def set_value(self, name, value):
         if name in self.symbols:
             self.symbols[name]["value"] = value
         else:
             raise ValueError(f"Variable '{name}' no definida.")
-    
+
     def get_scope(self, name):
         if name in self.symbols:
             return self.symbols[name]["scope"]
         return None
-    
+
+    def get_all_by_type(self, var_type):
+        return {name: info for name, info in self.symbols.items() if info["type"] == var_type}
+
     def __repr__(self):
         return str(self.symbols)
-    
+
     def print_table(self):
         if not self.symbols:
             print("La tabla de símbolos está vacía.")
             return
-        
+
+        headers = ["Nombre", "Tipo", "Ámbito", "Valor"]
+        rows = [[name, info["type"], info["scope"], info["value"]] for name, info in self.symbols.items()]
         print("\nTabla de Símbolos:")
-        print(f"{'Nombre':<15} {'Tipo':<10} {'Ambito':<10} {'Valor':<10}")
-        print("="*45)
-        for name, info in self.symbols.items():
-            print(f"{name:<15} {info['type']:<10} {info['scope']:<10} {str(info['value']):<10}")
+        print(tabulate(rows, headers, tablefmt="grid"))
         print("\n")
+
+class PrintTable:
+    def __init__(self):
+        self.tables = []
+
+    def add_table(self):
+        self.tables.append([])
+
+    def add_entry(self, table_index, value, tipo):
+        self.tables[table_index].append((value, tipo))
+
+    def print_entries(self):
+        for i, table in enumerate(self.tables):
+            print(f"\nSentencia de Impresión {i + 1}:")
+            headers = ["siqiy", "Tipo"]
+            rows = [(entry_value, entry_type) for entry_value, entry_type in table]
+            print(tabulate(rows, headers, tablefmt="grid"))
+            print("\n")
