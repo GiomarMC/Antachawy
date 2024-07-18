@@ -1,10 +1,11 @@
-from antachawy.symboltable import SymbolTable
+from antachawy.symboltable import SymbolTable, PrintTable
 
 class SemanticAnalyzer:
     def __init__(self):
         self.symbol_table = SymbolTable()
         self.errors = []
         self.current_scope = "global"
+        self.print_table = PrintTable()
 
     def visit(self, node):
         if node.name == "Programa":
@@ -33,6 +34,8 @@ class SemanticAnalyzer:
             return self.visit_termino(node)
         elif node.name == "Tipo":
             return self.visit_tipo(node)
+        elif node.name == "Impresiones":
+            self.visit_impresiones(node)
         return None, None
 
     def visit_programa(self, node):
@@ -150,7 +153,31 @@ class SemanticAnalyzer:
     
     def visit_tipo(self, node):
         return node.children[0].name, None
+    
+    def visit_impresiones(self, node):
+        self.print_table.add_table()
+        table_index = len(self.print_table.tables) - 1
+        expresion_impresion = node.children[2]
+        valores = self.visit_expresion_impresion(expresion_impresion)
+        for valor, tipo in valores:
+            self.print_table.add_entry(table_index, valor, tipo)
+
+    def visit_expresion_impresion(self, node):
+        valores = []
+        child = node.children[0].children[0].children[0]
+        left_type, left_value = self.visit(child)
+        valores.append((left_value, left_type))
+        if node.children[1].children:
+            valores.extend(self.visit_expresion_impresion_prime(node.children[1]))
+        return valores
+
+    def visit_expresion_impresion_prime(self, node):
+        valores = []
+        if node.children:
+            valores.extend(self.visit_expresion_impresion(node.children[1]))
+        return valores
 
     def analyze(self, root):
         self.visit(root)
         self.symbol_table.print_table()
+        self.print_table.print_entries()
