@@ -5,5 +5,6 @@ qhapaq ()
     yupay c
     c = a * b
     sananpa letra = 'A'
-    siqiy ("La suma de ", a, " + ", b, " es ", c)
+    siqiy ("La multiplacion de ", a, " * ", b, " es ", c)
+    siqiy ("La letra es", letra)
 }
