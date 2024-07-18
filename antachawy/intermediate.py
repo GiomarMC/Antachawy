@@ -1,9 +1,10 @@
-from antachawy.symboltable import SymbolTable
+from antachawy.symboltable import SymbolTable, PrintTable
 from anytree import Node
 
 class IntermediateCodeGenerator:
     def __init__(self):
         self.symbol_table = SymbolTable()
+        self.print_table = PrintTable()
         self.current_scope = "global"
         self.intermediate_code = []
         self.temp_count = 0
@@ -28,6 +29,8 @@ class IntermediateCodeGenerator:
             return self.visit_declaraciones_prime(node)
         elif node.name == "Asignaciones":
             self.visit_asignaciones(node)
+        elif node.name == "Impresiones":
+            self.visit_impresiones(node)
         elif node.name == "Expresion":
             return self.visit_expresion(node)
         elif node.name == "ExpresionMultiplicativa":
@@ -75,16 +78,38 @@ class IntermediateCodeGenerator:
 
     def visit_asignaciones(self, node):
         nombre = node.children[0].children[0].name
-        expresion_tipo, valor = self.visit(node.children[2])
-        tipo = self.symbol_table.get(nombre)
+        _, valor = self.visit(node.children[2])
         self.symbol_table.set_value(nombre, valor)
         self.intermediate_code.append(f"{nombre} = {valor}")
 
+    def visit_impresiones(self, node):
+        print("Entro a visit_impresiones")
+        expresion_impresion = node.children[2]
+        valores = self.visit_expresion_impresion(expresion_impresion)
+        for valor, _ in valores:
+            self.intermediate_code.append(f"PRINT {valor}")
+
+    def visit_expresion_impresion(self, node):
+        valores = []
+        child = node.children[0].children[0].children[0]
+        left_type, left_value = self.visit(child)
+        print(f"left_type: {left_type}, left_value: {left_value}")
+        valores.append((left_value, left_type))
+        if node.children[1].children:
+            valores.extend(self.visit_expresion_impresion_prime(node.children[1]))
+        return valores
+
+    def visit_expresion_impresion_prime(self, node):
+        valores = []
+        if node.children:
+            valores.extend(self.visit_expresion_impresion(node.children[1]))
+        return valores
+    
     def visit_expresion(self, node):
         left_type, left_value = self.visit(node.children[0])
         if node.children[1].children:
             operator = node.children[1].children[0].children[0].name
-            right_type, right_value = self.visit(node.children[1])
+            _, right_value = self.visit(node.children[1])
             if left_value and right_value:
                 temp = self.new_temp()
                 self.intermediate_code.append(f"{temp} = {left_value} {operator} {right_value}")
@@ -95,7 +120,7 @@ class IntermediateCodeGenerator:
         left_type, left_value = self.visit(node.children[0])
         if node.children[1].children:
             operator = node.children[1].children[0].children[0].name
-            right_type, right_value = self.visit(node.children[1])
+            _, right_value = self.visit(node.children[1])
             if left_value and right_value:
                 temp = self.new_temp()
                 self.intermediate_code.append(f"{temp} = {left_value} {operator} {right_value}")
@@ -106,7 +131,7 @@ class IntermediateCodeGenerator:
         if node.children:
             left_type, left_value = self.visit(node.children[1])
             operator = node.children[0].children[0].name
-            right_type, right_value = self.visit(node.children[2])
+            _, right_value = self.visit(node.children[2])
             if left_value and right_value:
                 temp = self.new_temp()
                 self.intermediate_code.append(f"{temp} = {left_value} {operator} {right_value}")
@@ -118,7 +143,7 @@ class IntermediateCodeGenerator:
         if node.children:
             left_type, left_value = self.visit(node.children[1])
             operator = node.children[0].children[0].name
-            right_type, right_value = self.visit(node.children[2])
+            _, right_value = self.visit(node.children[2])
             if left_value and right_value:
                 temp = self.new_temp()
                 self.intermediate_code.append(f"{temp} = {left_value} {operator} {right_value}")
@@ -150,4 +175,5 @@ class IntermediateCodeGenerator:
     def analyze(self, root):
         self.visit(root)
         self.symbol_table.print_table()
+        self.print_table.print_entries()
         return self.intermediate_code
