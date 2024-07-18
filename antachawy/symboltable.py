@@ -36,8 +36,9 @@ class SymbolTable:
             print("La tabla de símbolos está vacía.")
             return
         
-        print("Tabla de Símbolos:")
+        print("\nTabla de Símbolos:")
         print(f"{'Nombre':<15} {'Tipo':<10} {'Ambito':<10} {'Valor':<10}")
         print("="*45)
         for name, info in self.symbols.items():
             print(f"{name:<15} {info['type']:<10} {info['scope']:<10} {str(info['value']):<10}")
+        print("\n")
