@@ -10,91 +10,43 @@ Programa
     │   ├── Sentencias
     │   │   ├── Declaraciones
     │   │   │   ├── Tipo
-    │   │   │   │   └── bool
+    │   │   │   │   └── yupay
     │   │   │   ├── ID
-    │   │   │   │   └── flag
+    │   │   │   │   └── x
     │   │   │   └── DeclaracionesPrime
     │   │   │       ├── ASIGNACION
     │   │   │       │   └── =
     │   │   │       └── Expresion
     │   │   │           ├── ExpresionMultiplicativa
     │   │   │           │   ├── Termino
-    │   │   │           │   │   └── TRUE
-    │   │   │           │   │       └── yanqa
+    │   │   │           │   │   └── ENTERO
+    │   │   │           │   │       └── 5
     │   │   │           │   └── ExpresionMultiplicativaPrime
     │   │   │           └── ExpresionAditivaPrime
     │   │   └── \n
     │   └── ListaSentencias
     │       ├── Sentencias
-    │       │   ├── Declaraciones
-    │       │   │   ├── Tipo
-    │       │   │   │   └── qaytu
-    │       │   │   ├── ID
-    │       │   │   │   └── name
-    │       │   │   └── DeclaracionesPrime
-    │       │   │       ├── ASIGNACION
-    │       │   │       │   └── =
-    │       │   │       └── Expresion
-    │       │   │           ├── ExpresionMultiplicativa
-    │       │   │           │   ├── Termino
-    │       │   │           │   │   └── CADENA
-    │       │   │           │   │       └── Antachawy
-    │       │   │           │   └── ExpresionMultiplicativaPrime
-    │       │   │           └── ExpresionAditivaPrime
+    │       │   ├── Impresiones
+    │       │   │   ├── siqiy
+    │       │   │   ├── (
+    │       │   │   ├── ExpresionImpresion
+    │       │   │   │   ├── Expresion
+    │       │   │   │   │   ├── ExpresionMultiplicativa
+    │       │   │   │   │   │   ├── Termino
+    │       │   │   │   │   │   │   └── ID
+    │       │   │   │   │   │   │       └── x
+    │       │   │   │   │   │   └── ExpresionMultiplicativaPrime
+    │       │   │   │   │   └── ExpresionAditivaPrime
+    │       │   │   │   │       ├── OperadorAditivo
+    │       │   │   │   │       │   └── +
+    │       │   │   │   │       ├── ExpresionMultiplicativa
+    │       │   │   │   │       │   ├── Termino
+    │       │   │   │   │       │   │   └── ENTERO
+    │       │   │   │   │       │   │       └── 10
+    │       │   │   │   │       │   └── ExpresionMultiplicativaPrime
+    │       │   │   │   │       └── ExpresionAditivaPrime
+    │       │   │   │   └── ExpresionImpresionPrime
+    │       │   │   └── )
     │       │   └── \n
     │       └── ListaSentencias
-    │           ├── Sentencias
-    │           │   ├── Declaraciones
-    │           │   │   ├── Tipo
-    │           │   │   │   └── chunkayuq
-    │           │   │   ├── ID
-    │           │   │   │   └── pi
-    │           │   │   └── DeclaracionesPrime
-    │           │   │       ├── ASIGNACION
-    │           │   │       │   └── =
-    │           │   │       └── Expresion
-    │           │   │           ├── ExpresionMultiplicativa
-    │           │   │           │   ├── Termino
-    │           │   │           │   │   └── FLOTANTE
-    │           │   │           │   │       └── 3.14
-    │           │   │           │   └── ExpresionMultiplicativaPrime
-    │           │   │           └── ExpresionAditivaPrime
-    │           │   └── \n
-    │           └── ListaSentencias
-    │               ├── Sentencias
-    │               │   ├── Impresiones
-    │               │   │   ├── siqiy
-    │               │   │   ├── (
-    │               │   │   ├── ExpresionImpresion
-    │               │   │   │   ├── Expresion
-    │               │   │   │   │   ├── ExpresionMultiplicativa
-    │               │   │   │   │   │   ├── Termino
-    │               │   │   │   │   │   │   └── ID
-    │               │   │   │   │   │   │       └── flag
-    │               │   │   │   │   │   └── ExpresionMultiplicativaPrime
-    │               │   │   │   │   └── ExpresionAditivaPrime
-    │               │   │   │   └── ExpresionImpresionPrime
-    │               │   │   │       ├── ,
-    │               │   │   │       └── ExpresionImpresion
-    │               │   │   │           ├── Expresion
-    │               │   │   │           │   ├── ExpresionMultiplicativa
-    │               │   │   │           │   │   ├── Termino
-    │               │   │   │           │   │   │   └── ID
-    │               │   │   │           │   │   │       └── name
-    │               │   │   │           │   │   └── ExpresionMultiplicativaPrime
-    │               │   │   │           │   └── ExpresionAditivaPrime
-    │               │   │   │           └── ExpresionImpresionPrime
-    │               │   │   │               ├── ,
-    │               │   │   │               └── ExpresionImpresion
-    │               │   │   │                   ├── Expresion
-    │               │   │   │                   │   ├── ExpresionMultiplicativa
-    │               │   │   │                   │   │   ├── Termino
-    │               │   │   │                   │   │   │   └── ID
-    │               │   │   │                   │   │   │       └── pi
-    │               │   │   │                   │   │   └── ExpresionMultiplicativaPrime
-    │               │   │   │                   │   └── ExpresionAditivaPrime
-    │               │   │   │                   └── ExpresionImpresionPrime
-    │               │   │   └── )
-    │               │   └── \n
-    │               └── ListaSentencias
     └── }
