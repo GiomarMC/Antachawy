@@ -57,6 +57,12 @@ class PrintTable:
     def add_entry(self, table_index, value, tipo):
         self.tables[table_index].append((value, tipo))
 
+    def get_entries_by_index(self, index):
+        if 0 <= index < len(self.tables):
+            return self.tables[index]
+        else:
+            return None
+
     def print_entries(self):
         for i, table in enumerate(self.tables):
             print(f"\nSentencia de Impresión {i + 1}:")
