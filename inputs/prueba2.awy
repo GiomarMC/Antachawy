@@ -1,6 +1,6 @@
 qhapaq () 
 {
     yupay x = 5
-    chunkayuq y = 10
+    yupay y = 10
     siqiy ( x + y )
 }
