@@ -1,10 +1,10 @@
-from antachawy.symboltable import SymbolTable, PrintTable
-from anytree import Node
+from antachawy.shared import symbol_table
+from tabulate import tabulate
+import os
 
 class IntermediateCodeGenerator:
     def __init__(self):
-        self.symbol_table = SymbolTable()
-        self.print_table = PrintTable()
+        self.symbol_table = symbol_table
         self.current_scope = "global"
         self.intermediate_code = []
         self.temp_count = 0
@@ -83,7 +83,6 @@ class IntermediateCodeGenerator:
         self.intermediate_code.append(f"{nombre} = {valor}")
 
     def visit_impresiones(self, node):
-        print("Entro a visit_impresiones")
         expresion_impresion = node.children[2]
         valores = self.visit_expresion_impresion(expresion_impresion)
         for valor, _ in valores:
@@ -93,7 +92,6 @@ class IntermediateCodeGenerator:
         valores = []
         child = node.children[0].children[0].children[0]
         left_type, left_value = self.visit(child)
-        print(f"left_type: {left_type}, left_value: {left_value}")
         valores.append((left_value, left_type))
         if node.children[1].children:
             valores.extend(self.visit_expresion_impresion_prime(node.children[1]))
@@ -162,8 +160,10 @@ class IntermediateCodeGenerator:
             return "yupay", int(child.children[0].name)
         elif child.name == "FLOTANTE":
             return "chunkayuq", float(child.children[0].name)
-        elif child.name == "TRUE" or child.name == "FALSE":
-            return "bool", bool(child.children[0].name)
+        elif child.name == "TRUE":
+            return "bool", child.children[0].name
+        elif child.name == "FALSE":
+            return "bool", child.children[0].name
         elif child.name == "CARACTER":
             return "sananpa", child.children[0].name
         elif child.name == "CADENA":
@@ -174,6 +174,22 @@ class IntermediateCodeGenerator:
 
     def analyze(self, root):
         self.visit(root)
-        self.symbol_table.print_table()
-        self.print_table.print_entries()
+        self.save_intermediate_code()
+        self.save_symbol_table()
         return self.intermediate_code
+    
+    def save_intermediate_code(self, filename="intermediate_code.txt"):
+        os.makedirs("outputs/intermediate", exist_ok=True)
+        filepath = os.path.join("outputs/intermediate", filename)
+        with open(filepath, "w") as file:
+            for line in self.intermediate_code:
+                file.write(line + "\n")
+
+    def save_symbol_table(self, filename="symbol_table.txt"):
+        os.makedirs("outputs/intermediate", exist_ok=True)
+        filepath = os.path.join("outputs/intermediate", filename)
+        with open(filepath, "w") as file:
+            headers = ["Nombre", "Tipo", "Ámbito", "Valor"]
+            rows = [[name, info["type"], info["scope"], info["value"]] for name, info in self.symbol_table.symbols.items()]
+            file.write("Tabla de Símbolos:\n")
+            file.write(tabulate(rows, headers, tablefmt="grid"))
