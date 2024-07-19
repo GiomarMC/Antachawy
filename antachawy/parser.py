@@ -1,12 +1,16 @@
 from antachawy.definitions import LexemasAntachawy, EtiquetasAntachawy, primeros
 from antachawy.scanner import Scanner
-
 from anytree import Node, RenderTree
 from anytree.exporter import UniqueDotExporter
+from tabulate import tabulate
+import os
 
-def render_tree(root: object):
+def render_tree(root: object, filename: str):
+    tree_str = ""
     for pre, fill, node in RenderTree(root):
-        print("%s%s" % (pre, node.name))
+        tree_str += "%s%s\n" % (pre, node.name)
+    with open(filename, "w") as file:
+        file.write(tree_str)
 
 def export_tree(root: object, filename: str):
     UniqueDotExporter(root).to_dotfile(filename + ".dot")
@@ -34,13 +38,7 @@ class RecursiveDescentParser:
                 "contenido": self.current_token.lexema
             })
         
-        render_tree(self.root)
-        export_tree(self.root,"AbstracSyntaxTree")
-
-        if not self.errors:
-            print("-->Accepted Program")
-        else:
-            print("-->Rejected Program")
+        self.save_syntax_outputs(self.root, "outputs/sintactic/AbstractSyntaxTree")
         return self.root
     
     def next_token(self):
@@ -270,3 +268,8 @@ class RecursiveDescentParser:
             node_expresion_impresion = self.expresion_impresion()
             node_expresion_impresion.parent = node
         return node
+    
+    def save_syntax_outputs(self, root: object, base_filename: str):
+        os.makedirs("outputs/sintactic", exist_ok=True)
+        render_tree(root, base_filename + ".txt")
+        export_tree(root, base_filename)
