@@ -1,0 +1,18 @@
+PRINT Bienvenido a Antachawy
+a = 5
+b = 10
+c = 3.5
+d = 2.5
+letra = A
+saludo = Hola, mundo!
+t0 = 5 + 10
+f = t0
+t1 = t0 - 2
+x = t1
+PRINT 5
+PRINT La suma de 
+PRINT 5
+PRINT  + 
+PRINT 10
+PRINT es 
+PRINT t0
