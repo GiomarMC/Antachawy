@@ -1,11 +1,14 @@
-from antachawy.symboltable import SymbolTable, PrintTable
+from antachawy.symboltable import SymbolTable
+from antachawy.shared import print_table
+from tabulate import tabulate
+import os
 
 class SemanticAnalyzer:
     def __init__(self):
         self.symbol_table = SymbolTable()
         self.errors = []
         self.current_scope = "global"
-        self.print_table = PrintTable()
+        self.print_table = print_table
 
     def visit(self, node):
         if node.name == "Programa":
@@ -144,8 +147,10 @@ class SemanticAnalyzer:
             return "yupay", int(child.children[0].name)
         elif child.name == "FLOTANTE":
             return "chunkayuq", float(child.children[0].name)
-        elif child.name == "TRUE" or child.name == "FALSE":
-            return "bool", bool(child.children[0].name)
+        elif child.name == "TRUE":
+            return "bool", child.children[0].name
+        elif child.name == "FALSE":
+            return "bool", child.children[0].name
         elif child.name == "CARACTER":
             return "sananpa", child.children[0].name
         elif child.name == "CADENA":
@@ -176,8 +181,30 @@ class SemanticAnalyzer:
         if node.children:
             valores.extend(self.visit_expresion_impresion(node.children[1]))
         return valores
+    
+    def get_print_table(self):
+        return self.print_table
 
     def analyze(self, root):
         self.visit(root)
-        self.symbol_table.print_table()
-        self.print_table.print_entries()
+        self.save_symbol_table()
+        self.save_print_table()
+
+    def save_symbol_table(self, filename="symbol_table.txt"):
+        os.makedirs("outputs/semantic", exist_ok=True)
+        filepath = os.path.join("outputs/semantic", filename)
+        with open(filepath, "w") as file:
+            headers = ["Nombre", "Tipo", "Ámbito", "Valor"]
+            rows = [[name, info["type"], info["scope"], info["value"]] for name, info in self.symbol_table.symbols.items()]
+            file.write("Tabla de Símbolos:\n")
+            file.write(tabulate(rows, headers, tablefmt="grid"))
+
+    def save_print_table(self, filename="print_table.txt"):
+        os.makedirs("outputs/semantic", exist_ok=True)
+        filepath = os.path.join("outputs/semantic", filename)
+        with open(filepath, "w") as file:
+            for i, table in enumerate(self.print_table.tables):
+                file.write(f"\nSentencia de Impresión {i + 1}:\n")
+                headers = ["siqiy", "Tipo"]
+                rows = [(entry_value, entry_type) for entry_value, entry_type in table]
+                file.write(tabulate(rows, headers, tablefmt="grid"))
