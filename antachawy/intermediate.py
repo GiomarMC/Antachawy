@@ -90,7 +90,7 @@ class IntermediateCodeGenerator:
 
     def visit_expresion_impresion(self, node):
         valores = []
-        child = node.children[0].children[0].children[0]
+        child = node.children[0]
         left_type, left_value = self.visit(child)
         valores.append((left_value, left_type))
         if node.children[1].children:
