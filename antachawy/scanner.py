@@ -1,6 +1,8 @@
 from antachawy.definitions import LexemasAntachawy, EtiquetasAntachawy, lexema_a_etiqueta, simbolos_compuestos
 from antachawy.token import Token
+from tabulate import tabulate
 import re
+import os
 
 class Scanner:
     def __init__(self):
@@ -82,7 +84,7 @@ class Scanner:
                 token = self.__get_special_character()
                 if token:
                     self.tokens.append(token)
-
+        self.save_tokens()
         return self.tokens
 
     def __peek_next_char(self):
@@ -244,3 +246,11 @@ class Scanner:
         # Tokeniza el contenido del archivo dado
         self.__open_file(filename)
         return self.__get_tokens()
+    
+    def save_tokens(self, filename="tokens.txt"):
+        os.makedirs("outputs/lexicon", exist_ok=True)
+        filepath = os.path.join("outputs/lexicon", filename)
+        headers = ["Lexema", "Etiqueta", "Linea", "Indice"]
+        rows = [[token.lexema, token.etiqueta, token.linea, token.idx] for token in self.tokens]
+        with open(filepath, "w") as file:
+            file.write(tabulate(rows, headers, tablefmt="grid"))
