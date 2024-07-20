@@ -10,7 +10,7 @@ class ConsoleHandler:
     console = Console()
     
     def print_title(self):
-        title = """ #Antachawy Compiler """
+        title = """     Antachawy Compiler """
         self.console.print(Markdown(title))
 
     def scan_debug_table(self, tokens):
