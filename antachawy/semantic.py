@@ -187,8 +187,6 @@ class SemanticAnalyzer:
 
     def analyze(self, root):
         self.visit(root)
-        self.save_symbol_table()
-        self.save_print_table()
 
     def save_symbol_table(self, filename="symbol_table.txt"):
         os.makedirs("outputs/semantic", exist_ok=True)
