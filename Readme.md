@@ -62,12 +62,14 @@ Una vez que el entorno virtual esté activado, instala el paquete de Python, eje
 ### En Linux/MacOS
 
 ```bash
+pip install setuptools
 python3 setup.py install
 ```
 
 ## En Windows
 
 ```bash
+pip install setuptools
 python setup.py install
 ```
 
