@@ -61,15 +61,15 @@ Una vez que el entorno virtual esté activado, instala el paquete de Python, eje
 
 ### En Linux/MacOS
 
-    ```bash
-    python3 setup.py install
-    ```
+```bash
+python3 setup.py install
+```
 
 ## En Windows
 
-    ```bash
-    python setup.py install
-    ```
+```bash
+python setup.py install
+```
 
 Esto instalará todas las dependencias necesarias para el proyecto.
 
@@ -77,40 +77,41 @@ Esto instalará todas las dependencias necesarias para el proyecto.
 
 Con el entorno virtual activado y el paquete de python instalado, puedes ejecutar el compilador con el siguiente comando:
 
-    ```bash
-    antachawy archivo.awy
-    ```
+```bash
+antachawy archivo.awy
+```
+
 Reemplaza el archivo.awy con el nombre del archivo fuente que deseas compilar.    
 Por defecto el compilador generara un archivo ejecutable llamado `run` o `run.exe` si utilizas un Sistema Operativo Linux o Windows respectivamente.
 Para ejecutar el ejecutable deberas hacerlo de la siguiente manera.
 
 ### En Windows
 
-    ```bash
-    .\run.exe
-    ```
+```bash
+.\run.exe
+```
 
 ### En Linux
 
-    ```bash
-    ./run
-    ```
+```bash
+./run
+```
 
 ## Opciones adicionales
 
 El compilador de Antachawy cuenta con un CLI, los comandos que utiliza se utilizando el siguiente comando.
 
-    ```bash
-    antachawy -h
-    ```
+```bash
+antachawy -h
+```
 
 Apareceran las siguientes opciones.
 
-    ```bash
-    -o, --output: Especifica el nombre del archivo de salida (ejecutable generado).
-    -d, --debug: Genera archivos de depuración en la carpeta outputs.
-    -v, --version: Muestra la versión del compilador.
-    ```
+```bash
+-o, --output: Especifica el nombre del archivo de salida (ejecutable generado).
+-d, --debug: Genera archivos de depuración en la carpeta outputs.
+-v, --version: Muestra la versión del compilador.
+```
 
 ## Sobre el Lenguaje
 
@@ -143,89 +144,89 @@ A continuacion se presenta una lista de las palabras reservadas en el lenguaje A
 
 A continuacion se mostrara un ejemplo de codigo fuente utilizando el lenguaje Antachawy.
 
-    ```bash
-    qhapaq () 
-    {
-        yupay a = 1
-        yupay b = 2
-        yupay c
-        c = a * b
-        sananpa letra = 'A'
-        siqiy ("La multiplacion de ", a, " * ", b, " es ", c)
-        siqiy ("La letra es", letra)
-    }
-    ```
+```bash
+qhapaq () 
+{
+    yupay a = 1
+    yupay b = 2
+    yupay c
+    c = a * b
+    sananpa letra = 'A'
+    siqiy ("La multiplacion de ", a, " * ", b, " es ", c)
+    siqiy ("La letra es", letra)
+}
+```
 
 Suponiendo que el archivo se llama main.awy, un ejemplo de compilacion seria el siguiente.
 
-    ```bash
-    antachawy main.awy -o main
-    ```
+```bash
+antachawy main.awy -o main
+```
 
 Se generara un archivo ejecutable el cual podras ejecutar siguiendo los pasos anteriores.
 
 Si se realiza un debug mostrara algunos archivos con contenidos como el AST generado por el compilador en una carpeta llamada outputs:
 A continuacion un ejemplo
 
-    ```bash
-    antachawu main.awy -o main -d
-    Programa
-    └── Definicion
-        ├── qhapaq
-        ├── (
-        ├── )
-        ├── \n
-        ├── {
-        ├── \n
-        ├── ListaSentencias
-        │   ├── Sentencias
-        │   │   ├── Declaraciones
-        │   │   │   ├── Tipo
-        │   │   │   │   └── yupay
-        │   │   │   ├── ID
-        │   │   │   │   └── x
-        │   │   │   └── DeclaracionesPrime
-        │   │   │       ├── ASIGNACION
-        │   │   │       │   └── =
-        │   │   │       └── Expresion
-        │   │   │           ├── ExpresionMultiplicativa
-        │   │   │           │   ├── Termino
-        │   │   │           │   │   └── ENTERO
-        │   │   │           │   │       └── 5
-        │   │   │           │   └── ExpresionMultiplicativaPrime
-        │   │   │           └── ExpresionAditivaPrime
-        │   │   └── \n
-        │   └── ListaSentencias
-        │       ├── Sentencias
-        │       │   ├── Impresiones
-        │       │   │   ├── siqiy
-        │       │   │   ├── (
-        │       │   │   ├── ExpresionImpresion
-        │       │   │   │   ├── Expresion
-        │       │   │   │   │   ├── ExpresionMultiplicativa
-        │       │   │   │   │   │   ├── Termino
-        │       │   │   │   │   │   │   └── ID
-        │       │   │   │   │   │   │       └── x
-        │       │   │   │   │   │   └── ExpresionMultiplicativaPrime
-        │       │   │   │   │   └── ExpresionAditivaPrime
-        │       │   │   │   │       ├── OperadorAditivo
-        │       │   │   │   │       │   └── +
-        │       │   │   │   │       ├── ExpresionMultiplicativa
-        │       │   │   │   │       │   ├── Termino
-        │       │   │   │   │       │   │   └── ENTERO
-        │       │   │   │   │       │   │       └── 10
-        │       │   │   │   │       │   └── ExpresionMultiplicativaPrime
-        │       │   │   │   │       └── ExpresionAditivaPrime
-        │       │   │   │   └── ExpresionImpresionPrime
-        │       │   │   └── )
-        │       │   └── \n
-        │       └── ListaSentencias
-        └── }
-    ```
+```bash
+antachawu main.awy -o main -d
+Programa
+└── Definicion
+    ├── qhapaq
+    ├── (
+    ├── )
+    ├── \n
+    ├── {
+    ├── \n
+    ├── ListaSentencias
+    │   ├── Sentencias
+    │   │   ├── Declaraciones
+    │   │   │   ├── Tipo
+    │   │   │   │   └── yupay
+    │   │   │   ├── ID
+    │   │   │   │   └── x
+    │   │   │   └── DeclaracionesPrime
+    │   │   │       ├── ASIGNACION
+    │   │   │       │   └── =
+    │   │   │       └── Expresion
+    │   │   │           ├── ExpresionMultiplicativa
+    │   │   │           │   ├── Termino
+    │   │   │           │   │   └── ENTERO
+    │   │   │           │   │       └── 5
+    │   │   │           │   └── ExpresionMultiplicativaPrime
+    │   │   │           └── ExpresionAditivaPrime
+    │   │   └── \n
+    │   └── ListaSentencias
+    │       ├── Sentencias
+    │       │   ├── Impresiones
+    │       │   │   ├── siqiy
+    │       │   │   ├── (
+    │       │   │   ├── ExpresionImpresion
+    │       │   │   │   ├── Expresion
+    │       │   │   │   │   ├── ExpresionMultiplicativa
+    │       │   │   │   │   │   ├── Termino
+    │       │   │   │   │   │   │   └── ID
+    │       │   │   │   │   │   │       └── x
+    │       │   │   │   │   │   └── ExpresionMultiplicativaPrime
+    │       │   │   │   │   └── ExpresionAditivaPrime
+    │       │   │   │   │       ├── OperadorAditivo
+    │       │   │   │   │       │   └── +
+    │       │   │   │   │       ├── ExpresionMultiplicativa
+    │       │   │   │   │       │   ├── Termino
+    │       │   │   │   │       │   │   └── ENTERO
+    │       │   │   │   │       │   │       └── 10
+    │       │   │   │   │       │   └── ExpresionMultiplicativaPrime
+    │       │   │   │   │       └── ExpresionAditivaPrime
+    │       │   │   │   └── ExpresionImpresionPrime
+    │       │   │   └── )
+    │       │   └── \n
+    │       └── ListaSentencias
+    └── }
+```
 
 Tambien se podra apreciar la imagen del AST
 
-![AST generado por el parser](https://drive.google.com/uc?export=view&id=15kYY9cGIhD9TDigms8tGycvrC-lJHGol)
+
 
 ## Contribuciones
 
