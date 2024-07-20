@@ -1,6 +1,7 @@
 # Compilador Antachawy
 
 Este proyecto tiene como objetivo desarrollar un compilador para un nuevo lenguaje de programación denominado Antachawy, el cual utiliza el quechua como base para sus sintaxis y términos. Este esfuerzo busca reducir la brecha digital que existe actualmente en Perú, promoviendo el uso de tecnologías y lenguajes de programación accesibles para las comunidades quechuahablantes.
+Este lenguaje utiliza el Quechua Collao como base.
 
 ## Requisitos Previos
 
