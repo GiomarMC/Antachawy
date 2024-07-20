@@ -1,6 +1,8 @@
 from antachawy.definitions import LexemasAntachawy, EtiquetasAntachawy, lexema_a_etiqueta, simbolos_compuestos
 from antachawy.token import Token
+from tabulate import tabulate
 import re
+import os
 
 class Scanner:
     def __init__(self):
@@ -48,6 +50,7 @@ class Scanner:
             if self.current_char.isspace():
                 # Ignora los espacios en blanco
                 if self.current_char == '\n':
+                    self.tokens.append(Token("\n", EtiquetasAntachawy.SALTO_LINEA, self.lineno, self.idx - 1))
                     self.lineno += 1
                 continue
             elif self.current_char == ':' and self.__peek_next_char() == ':':
@@ -81,7 +84,6 @@ class Scanner:
                 token = self.__get_special_character()
                 if token:
                     self.tokens.append(token)
-
         return self.tokens
 
     def __peek_next_char(self):
@@ -95,6 +97,8 @@ class Scanner:
         # Ignora los comentarios de línea
         while self.__get_next_char() is not None and self.current_char != '\n':
             continue
+        if self.current_char == '\n':
+            self.tokens.append(Token("\n", EtiquetasAntachawy.SALTO_LINEA, self.lineno, self.idx - 1))
         self.lineno += 1
 
     def __skip_block_comment(self):
@@ -127,7 +131,6 @@ class Scanner:
                 "linea": self.lineno,
                 "contenido": self.__get_current_line_content()
             })
-            self.lineno += 1
             return
         lexema += '"'
         return Token(lexema, EtiquetasAntachawy.CADENA, linea=self.lineno, idx=startidx)
@@ -159,7 +162,7 @@ class Scanner:
             self.lineno += 1
             return
         lexema += "'"
-        return Token(lexema, EtiquetasAntachawy.TIPO_SANANPA, self.lineno, startidx)
+        return Token(lexema, EtiquetasAntachawy.CARACTER, self.lineno, startidx)
 
     def __get_number(self):
         # Procesa y devuelve un token de número
@@ -196,8 +199,11 @@ class Scanner:
 
         if self.current_char:
             self.idx -= 1
-
-        return Token(lexema, EtiquetasAntachawy.NUMERO, self.lineno, startidx)
+        
+        if "." in lexema:
+            return Token(lexema, EtiquetasAntachawy.NUMEROFLOTANTE, self.lineno, startidx)
+        else:
+            return Token(lexema, EtiquetasAntachawy.NUMEROENTERO, self.lineno, startidx)
 
     def __get_id(self):
         # Procesa y devuelve un token de identificador o palabra clave
@@ -239,3 +245,11 @@ class Scanner:
         # Tokeniza el contenido del archivo dado
         self.__open_file(filename)
         return self.__get_tokens()
+    
+    def save_tokens(self, filename="tokens.txt"):
+        os.makedirs("outputs/lexicon", exist_ok=True)
+        filepath = os.path.join("outputs/lexicon", filename)
+        headers = ["Lexema", "Etiqueta", "Linea", "Indice"]
+        rows = [[token.lexema, token.etiqueta, token.linea, token.idx] for token in self.tokens]
+        with open(filepath, "w") as file:
+            file.write(tabulate(rows, headers, tablefmt="grid"))

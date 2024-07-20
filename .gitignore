@@ -5,6 +5,8 @@ __pycache__/
 
 # C extensions
 *.so
+*.c
+*.exe
 
 # Distribution / packaging
 .Python
@@ -24,7 +26,9 @@ pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
+outputs/
 *.egg
+run
 MANIFEST
 
 # PyInstaller
@@ -127,5 +131,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-*.png

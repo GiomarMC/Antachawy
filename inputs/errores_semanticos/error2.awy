@@ -1,0 +1,7 @@
+qhapaq()
+{
+    yupay x
+    bool flag
+    x = flag
+    yupay result = x + 10
+}
