@@ -4,9 +4,12 @@ import pathlib
 HERE = pathlib.Path(__file__).parent
 with open(HERE / 'requirements.txt') as f:
     requirements = f.read().splitlines()
+
+VERSION = "0.0.1"
+
 setup(
     name = "antachawy",
-    version = "0.0.1",
+    version = VERSION,
     packages = find_packages(),
     include_package_data = True,
     author = "Giomar Muñoz, Melany Cahuana, Andrea Cuela",
