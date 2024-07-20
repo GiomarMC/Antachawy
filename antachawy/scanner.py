@@ -84,7 +84,6 @@ class Scanner:
                 token = self.__get_special_character()
                 if token:
                     self.tokens.append(token)
-        self.save_tokens()
         return self.tokens
 
     def __peek_next_char(self):
