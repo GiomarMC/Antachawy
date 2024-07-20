@@ -174,8 +174,6 @@ class IntermediateCodeGenerator:
 
     def analyze(self, root):
         self.visit(root)
-        self.save_intermediate_code()
-        self.save_symbol_table()
         return self.intermediate_code
     
     def save_intermediate_code(self, filename="intermediate_code.txt"):
