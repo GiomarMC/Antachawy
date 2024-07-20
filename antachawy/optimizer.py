@@ -14,7 +14,6 @@ class IntermediateCodeOptimizer:
         self.simplify_expressions()
         if self.combine_prints:
             self.combine_prints_instructions()
-        self.save_optimized_code()
         return self.optimized_code
 
     def propagate_constants_and_copies(self):
