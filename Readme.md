@@ -226,7 +226,7 @@ Programa
 
 Tambien se podra apreciar la imagen del AST
 
-
+![Descripción de la imagen](images/AbstractSyntaxTree.png)
 
 ## Contribuciones
 
