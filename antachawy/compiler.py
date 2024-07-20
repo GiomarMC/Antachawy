@@ -4,17 +4,27 @@ from antachawy.consolehandler import ConsoleHandler
 from antachawy.semantic import SemanticAnalyzer
 from antachawy.intermediate import IntermediateCodeGenerator
 from antachawy.optimizer import IntermediateCodeOptimizer
-from antachawy.assembler import AssemblyCodeGenerator
 from antachawy.traductor_c import CodeTranslator
 import subprocess
 import os
+import time
+import platform
 
 class Compiler:
-    def __init__(self, source_code: str):
+    def __init__(self, source_code: str, output_file: str, debug: bool = False):
         self.source_code = source_code
+        self.output_file = output_file if output_file else self.default_output_file()
+        self.debug = debug
         self.scanner = Scanner()
         self.parser = None
         self.console_handler = ConsoleHandler()
+
+    def default_output_file(self):
+        system = platform.system()
+        if system == "Windows":
+            return "run.exe"
+        else:
+            return "run"
 
     def compile(self):
         tokens = self.perform_lexical_analysis()
@@ -30,9 +40,8 @@ class Compiler:
 
         code = self.generate_intermediate_code(tree)
         codigo = self.optimize_intermediate_code(code)
-        #self.generate_assembly_code(codigo)
         self.translate_to_c(codigo)
-        self.compile_c_code("programa.c", "programa")
+        self.compile_c_code("programa.c", self.output_file)
         return True
 
     def perform_lexical_analysis(self):
@@ -43,6 +52,9 @@ class Compiler:
             self.console_handler.show_errors(lex_errors)
             return None
         print("--> Lexical Analysis Passed")
+        time.sleep(1)
+        if self.debug:
+            self.scanner.save_tokens()
         return tokens
 
     def perform_syntax_analysis(self):
@@ -53,6 +65,9 @@ class Compiler:
             self.console_handler.show_errors(parse_errors)
             return None
         print("--> Syntax Analysis Passed")
+        time.sleep(1)
+        if self.debug:
+            self.parser.save_syntax_outputs(tree, "outputs/sintactic/AbstractSyntaxTree")
         return tree
 
     def perform_semantic_analysis(self, tree):
@@ -63,33 +78,37 @@ class Compiler:
                 print(error)
             return False
         print("--> Semantic Analysis Passed")
+        time.sleep(1)
+        if self.debug:
+            analyzer.save_symbol_table()
+            analyzer.save_print_table()
         return True
 
     def generate_intermediate_code(self, tree):
         generator = IntermediateCodeGenerator()
         code = generator.analyze(tree)
         print("--> Generated Intermediate Code")
+        time.sleep(1)
+        if self.debug:
+            generator.save_intermediate_code()
+            generator.save_symbol_table()
         return code
     
     def optimize_intermediate_code(self, code):
         optimizer = IntermediateCodeOptimizer(code)
         codigo = optimizer.optimize()
         print("--> Optimized Intermediate Code")
+        time.sleep(1)
+        if self.debug:
+            optimizer.save_optimized_code()
         return codigo
-    
-    """
-    def generate_assembly_code(self, code):
-        generator = AssemblyCodeGenerator(code)
-        generator.save_to_file("programa.asm")
-        print("--> Generated Assembly Code")
-        return True
-    """
 
     def translate_to_c(self, optimized_code):
         translator = CodeTranslator(optimized_code)
         translator.translate_to_c()
         translator.save_to_file("programa.c")
         print("--> Translated to C")
+        time.sleep(1)
         return True
     
     def compile_c_code(self, source_file, output_file):
@@ -97,6 +116,9 @@ class Compiler:
             compile_command = ["gcc", source_file, "-o", output_file]
             result = subprocess.run(compile_command, check=True, capture_output=True, text=True)
             print(f"--> Compilation successful. Executable created: {output_file}")
+            time.sleep(1)
             print(result.stdout)
+            if not self.debug:
+                os.remove(source_file)
         except subprocess.CalledProcessError as e:
             print(f"--> Error during compilation: {e.stderr}")
