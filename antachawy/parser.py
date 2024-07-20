@@ -38,7 +38,6 @@ class RecursiveDescentParser:
                 "contenido": self.current_token.lexema
             })
         
-        self.save_syntax_outputs(self.root, "outputs/sintactic/AbstractSyntaxTree")
         return self.root
     
     def next_token(self):
