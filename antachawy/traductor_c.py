@@ -15,7 +15,7 @@ int main() {
 """
         for instruction in self.optimized_code:
             parts = instruction.split()
-            if len(parts) == 3 and parts[1] == '=':  # Asignación
+            if len(parts) == 3 and parts[1] == '=':
                 dest, _, src = parts
                 var_type = self.symbol_table.get(dest)
                 if var_type == "yupay":
@@ -30,11 +30,11 @@ int main() {
                     c_code += f"    int {dest} = {1 if src == 'chiqaq' else 0};\n"
                 else:
                     c_code += f"    int {dest} = {src};\n"
-            elif len(parts) == 5:  # Operación binaria
+            elif len(parts) == 5:
                 dest, _, left, op, right = parts
                 c_code += f"    int {dest} = {left} {op} {right};\n"
-            elif parts[0] == "PRINT":  # Instrucción PRINT
-                table_index = int(parts[1])  # Suponiendo que el índice de la tabla es parte de la instrucción PRINT
+            elif parts[0] == "PRINT":
+                table_index = int(parts[1])
                 entries = self.print_table.get_entries_by_index(table_index)
                 if entries:
                     print_statement = "    printf(\""

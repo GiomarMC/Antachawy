@@ -18,27 +18,27 @@ class IntermediateCodeOptimizer:
 
     def propagate_constants_and_copies(self):
         new_code = []
-        print_index = 0  # Start print index
+        print_index = 0
         for instruction in self.intermediate_code:
             parts = instruction.split()
-            if len(parts) == 3:  # Asignación simple
+            if len(parts) == 3:
                 dest, _, src = parts
-                if src.isdigit() or (src.startswith("'") and src.endswith("'")):  # Propagar constantes
+                if src.isdigit() or (src.startswith("'") and src.endswith("'")):
                     self.constants[dest] = src
                     new_code.append(instruction)
-                elif src in self.constants:  # Propagar constantes
+                elif src in self.constants:
                     new_code.append(f"{dest} = {self.constants[src]}")
                 else:
                     self.copies[dest] = src
                     new_code.append(instruction)
-            elif len(parts) == 5:  # Operación binaria
+            elif len(parts) == 5:
                 dest, _, left, op, right = parts
                 if left in self.constants:
                     left = self.constants[left]
                 if right in self.constants:
                     right = self.constants[right]
                 new_code.append(f"{dest} = {left} {op} {right}")
-            elif parts[0] == "PRINT":  # Instrucción PRINT
+            elif parts[0] == "PRINT":
                 new_code.append(f"PRINT {print_index}")
                 print_index += 1
         self.intermediate_code = new_code
@@ -47,20 +47,20 @@ class IntermediateCodeOptimizer:
         used_vars = set()
         for instruction in reversed(self.intermediate_code):
             parts = instruction.split()
-            if len(parts) == 3:  # Asignación simple
+            if len(parts) == 3:
                 dest, _, src = parts
                 if dest in used_vars or src in used_vars:
                     self.optimized_code.insert(0, instruction)
                 used_vars.add(dest)
                 used_vars.add(src)
-            elif len(parts) == 5:  # Operación binaria
+            elif len(parts) == 5:
                 dest, _, left, op, right = parts
                 if dest in used_vars or left in used_vars or right in used_vars:
                     self.optimized_code.insert(0, instruction)
                 used_vars.add(dest)
                 used_vars.add(left)
                 used_vars.add(right)
-            elif parts[0] == "PRINT":  # Instrucción PRINT
+            elif parts[0] == "PRINT":
                 var_to_print = parts[1]
                 if var_to_print in self.constants:
                     self.optimized_code.insert(0, f"PRINT {self.constants[var_to_print]}")
@@ -71,7 +71,7 @@ class IntermediateCodeOptimizer:
     def simplify_expressions(self):
         for i, instruction in enumerate(self.optimized_code):
             parts = instruction.split()
-            if len(parts) == 5:  # Operación binaria
+            if len(parts) == 5:
                 dest, _, left, op, right = parts
                 if left.isdigit() and right.isdigit():
                     result = eval(f"{left} {op} {right}")
