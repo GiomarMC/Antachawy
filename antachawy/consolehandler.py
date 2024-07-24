@@ -27,7 +27,7 @@ class ConsoleHandler:
 
     def show_errors(self, errors):
         if not errors:
-            self.console.print(Panel("No se encontraron errores lexicos", border_style="green"))
+            self.console.print(Panel("No se encontraron errores", border_style="green"))
             return
         
         error_message = Text()
@@ -36,5 +36,5 @@ class ConsoleHandler:
             error_message.append(f"{error['mensaje']}\n", style="cyan")
             error_message.append(f"     {error['contenido']}\n", style="magenta")
 
-        error_panel = Panel(error_message, title="Errores de Analisis Lexico", border_style="red")
+        error_panel = Panel(error_message, title="Errores de Compilacion", border_style="red")
         self.console.print(error_panel)
