@@ -1,5 +1,6 @@
 from antachawy.definitions import LexemasAntachawy, EtiquetasAntachawy, primeros
 from antachawy.scanner import Scanner
+from antachawy.sourcecode import SourceCode
 from anytree import Node, RenderTree
 from anytree.exporter import UniqueDotExporter
 from tabulate import tabulate
@@ -17,14 +18,18 @@ def export_tree(root: object, filename: str):
     UniqueDotExporter(root).to_picture(filename + ".png")
 
 class RecursiveDescentParser:
-    def __init__(self, scanner: Scanner):
+    def __init__(self, scanner: Scanner, source_code: SourceCode):
         self.scanner = scanner
         self.tokens = []
         self.current_token_idx = 0
         self.current_token = None
         self.root = None
         self.errors = []
+        self.source_code = source_code
 
+    def get_current_line_content(self, line):
+        return self.source_code.get_line(line)
+    
     def parse(self):
         self.tokens = self.scanner.tokens
         self.current_token_idx = 0
@@ -33,13 +38,13 @@ class RecursiveDescentParser:
 
         if self.current_token is not None:
             self.errors.append({
-                "mensaje": f"Token inesperado '{self.current_token.lexema}'",
+                "mensaje": f"Error: '{self.current_token.lexema}'",
                 "linea": self.current_token.linea,
-                "contenido": self.current_token.lexema
+                "contenido": self.get_current_line_content(self.current_token.linea)
             })
         
         return self.root
-    
+
     def next_token(self):
         self.current_token_idx += 1
         if self.current_token_idx < len(self.tokens):
@@ -62,7 +67,7 @@ class RecursiveDescentParser:
                 return
         else:
             if self.current_token is not None:
-                mensaje = f"Token inesperado '{self.current_token.etiqueta}' se esperaba '{expected_tag}'"
+                mensaje = f"Error: '{self.current_token.etiqueta}' se esperaba '{expected_tag}'"
                 self.panic_mode(mensaje,EtiquetasAntachawy.SALTO_LINEA, parent=parent)
             else:
                 mensaje = f"Se esperaba '{expected_tag}' al final del archivo"
@@ -75,14 +80,14 @@ class RecursiveDescentParser:
             self.errors.append({
                 "mensaje": mensaje,
                 "linea": self.current_token.linea,
-                "contenido": self.current_token.lexema
+                "contenido": self.get_current_line_content(self.current_token.linea)
             })
 
         if not expected_tags:
             self.errors.append({
                 "mensaje": mensaje,
                 "linea": self.tokens[-1].linea,
-                "contenido": self.tokens[-1].lexema
+                "contenido": self.get_current_line_content(self.tokens[-1].linea)
             })
             return
         
@@ -246,7 +251,7 @@ class RecursiveDescentParser:
                 self.consume(self.current_token.etiqueta, node_termino)
 
         else:
-            mensaje = f"Token inesperado '{self.current_token.etiqueta}'"
+            mensaje = f"Error: '{self.current_token.etiqueta}'"
             self.panic_mode(mensaje, EtiquetasAntachawy.SALTO_LINEA, parent=node)
         return node
     
