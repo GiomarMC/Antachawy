@@ -1,14 +1,16 @@
 from antachawy.symboltable import SymbolTable
 from antachawy.shared import print_table
+from antachawy.sourcecode import SourceCode
 from tabulate import tabulate
 import os
 
 class SemanticAnalyzer:
-    def __init__(self):
+    def __init__(self, source_code: SourceCode):
         self.symbol_table = SymbolTable()
         self.errors = []
         self.current_scope = "global"
         self.print_table = print_table
+        self.source_code = source_code
 
     def visit(self, node):
         if node.name == "Programa":
@@ -78,7 +80,7 @@ class SemanticAnalyzer:
         expresion_tipo, valor = self.visit(node.children[2])
         tipo = self.symbol_table.get(nombre)
         if tipo is None:
-            self.errors.append(f"Error: Variable '{nombre}' no declarada.", node.line)
+            self.errors.append(f"Error: Variable '{nombre}' no declarada.")
         if tipo != expresion_tipo:
             self.errors.append(f"Error de tipo: Variable '{nombre}' es de tipo '{tipo}' y la expresión es de tipo '{expresion_tipo}'.")
         else:
