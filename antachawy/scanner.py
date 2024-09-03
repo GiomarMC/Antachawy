@@ -1,11 +1,12 @@
 from antachawy.definitions import LexemasAntachawy, EtiquetasAntachawy, lexema_a_etiqueta, simbolos_compuestos
 from antachawy.token import Token
+from antachawy.sourcecode import SourceCode
 from tabulate import tabulate
 import re
 import os
 
 class Scanner:
-    def __init__(self):
+    def __init__(self, source_code: SourceCode):
         # Inicializa el scanner con valores predeterminados
         self.code = ""                          # Contenido del archivo fuente
         self.lineno = 1                         # Línea actual del archivo fuente
@@ -13,6 +14,7 @@ class Scanner:
         self.idx = 0                            # Índice actual en el archivo fuente
         self.tokens = []                        # Lista de tokens generados
         self.errors = []                        # Lista de errores encontrados
+        self.source_code = source_code          # Objeto SourceCode
 
     def __open_file(self, filename: str):
         # Abre un archivo y guarda su contenido en self.code
@@ -37,12 +39,7 @@ class Scanner:
 
     def __get_current_line_content(self):
         # Devuelve el contenido de la línea actual donde se encuentra el índice(self.idx)
-        startidx = self.code.rfind('\n', 0, self.idx - 1) + 1
-        end = self.code.find('\n', self.idx - 1)
-        if end == -1:
-            end = len(self.code)
-        line_content = self.code[startidx: end].strip()
-        return self.__remove_coments(line_content)
+        return self.source_code.get_line(self.lineno)
 
     def __get_tokens(self):
         # Principal función de análisis que recorre el archivo y genera tokens
@@ -127,7 +124,7 @@ class Scanner:
 
         if self.current_char != '"':
             self.errors.append({
-                "mensaje": "literal de cadena no terminada en la línea",
+                "mensaje": "Literal de cadena no terminada en la línea",
                 "linea": self.lineno,
                 "contenido": self.__get_current_line_content()
             })
@@ -155,7 +152,7 @@ class Scanner:
         
         if self.current_char != "'":
             self.errors.append({
-                "mensaje": "literal de caracter no terminado en la línea",
+                "mensaje": "Literal de caracter no terminado en la línea",
                 "linea": self.lineno,
                 "contenido": self.__get_current_line_content()
             })
@@ -191,7 +188,7 @@ class Scanner:
                 self.__get_next_char()
             
             self.errors.append({
-                "mensaje": f"Numero seguido por caracteres no permitidos",
+                "mensaje": "Numero seguido por caracteres no permitidos",
                 "linea": self.lineno,
                 "contenido": self.__get_current_line_content()
             })
