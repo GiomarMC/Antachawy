@@ -1,0 +1,43 @@
+qhapaq()
+{
+    yupay a = 5..  
+    yupay b = 10abc123  
+    chunkayuq c = .5.5  
+    chunkayuq d = 2..5  
+    sananpa letra = ''
+    sananpa letra2 = '  
+    sananpa letra3 = 'AB'  
+    qaytu saludo = "Hola, mundo!  
+    yupay ^ = 5  
+    yupay # = 10  
+    chunkayuq e = 3.5.5.5  
+
+    ari (a > 10)
+    {
+        Siqiy("a es mayor que 10")
+    }
+    mana_chayqa_ari (a == 10)
+    {
+        Siqiy("a es igual a 10")
+    }
+    mana_chayqa
+    {
+        Siqiy("a no es mayor que 10 y no es igual a 10")
+    }
+
+    imapaq (yupay i = 0; i < 5; i = i + 1)
+    {
+        Siqiy("i es " + i)
+    }
+
+    yupay contador = 0
+    chaykama (contador < 3)
+    {
+        Siqiy("Contador es " + contador)
+        contador = contador + 1
+    }
+
+    :*
+    Comentario de bloque de ejemplo
+    *:
+}
