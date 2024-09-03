@@ -1,12 +1,12 @@
 qhapaq()
 { 
-    yupay a = 5a  :: Error: número seguido de letra
-    yupay b = 10..5  :: Error: doble punto decimal en número
-    chunkayuq c = 3.5 
-    chunkayuq d = 2.5 
-    sananpa letra = 'A  :: Error: literal de carácter no terminado
-    qaytu saludo = "Hola, mundo!  :: Error: literal de cadena no terminado
-
+    yupay a = 5a
+    yupay b = 10..5
+    chunkayuq c = 3.5
+    chunkayuq d = 2.5
+    sananpa letra = 'A
+    qaytu saludo = "Hola, mundo!
+    
     a = a + b
 
     ari (a > 10)    
