@@ -55,13 +55,15 @@ class RecursiveDescentParser:
     def consume(self, expected_tag, parent: Node):
         if self.current_token is not None and self.current_token.etiqueta == expected_tag:
             if self.current_token.etiqueta == EtiquetasAntachawy.SALTO_LINEA:
-                Node('\\n', parent=parent)
+                token_node = Node('\\n', parent=parent)
             elif self.current_token.etiqueta == EtiquetasAntachawy.CARACTER:
-                Node(self.current_token.lexema[1:-1], parent=parent)
+                token_node = Node(self.current_token.lexema[1:-1], parent=parent)
             elif self.current_token.etiqueta == EtiquetasAntachawy.CADENA:
-                Node(self.current_token.lexema[1:-1], parent=parent)
+                token_node = Node(self.current_token.lexema[1:-1], parent=parent)
             else:
-                Node(self.current_token.lexema, parent=parent)
+                token_node = Node(self.current_token.lexema, parent=parent)
+
+            Node(self.current_token.linea, parent=token_node)
             self.next_token()
             if self.current_token is None:
                 return
