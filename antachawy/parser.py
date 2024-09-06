@@ -6,6 +6,8 @@ from anytree.exporter import UniqueDotExporter
 from tabulate import tabulate
 import os
 
+SALTO_DE_LINEA = 'salto de línea'
+
 def render_tree(root: object, filename: str):
     tree_str = ""
     for pre, fill, node in RenderTree(root):
@@ -52,7 +54,7 @@ class RecursiveDescentParser:
         else:
             self.current_token = None
 
-    def consume(self, expected_tag, parent: Node):
+    def consume(self, expected_tag, lexema, parent: Node):
         if self.current_token is not None and self.current_token.etiqueta == expected_tag:
             if self.current_token.etiqueta == EtiquetasAntachawy.SALTO_LINEA:
                 token_node = Node('\\n', parent=parent)
@@ -69,10 +71,12 @@ class RecursiveDescentParser:
                 return
         else:
             if self.current_token is not None:
-                mensaje = f"Error: '{self.current_token.etiqueta}' se esperaba '{expected_tag}'"
+                token = SALTO_DE_LINEA if self.current_token.lexema == '\n' else self.current_token.lexema
+                lexema = SALTO_DE_LINEA if lexema == '\n' else lexema
+                mensaje = f"Error inesperado '{token}' se esperaba '{lexema}'"
                 self.panic_mode(mensaje,EtiquetasAntachawy.SALTO_LINEA, parent=parent)
             else:
-                mensaje = f"Se esperaba '{expected_tag}' al final del archivo"
+                mensaje = f"Se esperaba '{lexema}' al final del archivo"
                 self.panic_mode(mensaje, None, parent=parent)
         
     def panic_mode(self, mensaje, *expected_tags, parent: Node):
@@ -104,15 +108,15 @@ class RecursiveDescentParser:
     
     def definicion(self):
         node = Node("Definicion")
-        self.consume(EtiquetasAntachawy.PROGRAMA,node)
-        self.consume(EtiquetasAntachawy.PAREN_IZQ,node)
-        self.consume(EtiquetasAntachawy.PAREN_DER,node)
-        self.consume(EtiquetasAntachawy.SALTO_LINEA,node)
-        self.consume(EtiquetasAntachawy.LLAVE_IZQ,node)
-        self.consume(EtiquetasAntachawy.SALTO_LINEA,node)
+        self.consume(EtiquetasAntachawy.PROGRAMA,LexemasAntachawy.QHAPAQ,node)
+        self.consume(EtiquetasAntachawy.PAREN_IZQ,LexemasAntachawy.PAREN_IZQ,node)
+        self.consume(EtiquetasAntachawy.PAREN_DER,LexemasAntachawy.PAREN_DER,node)
+        self.consume(EtiquetasAntachawy.SALTO_LINEA,LexemasAntachawy.SALTO_LINEA,node)
+        self.consume(EtiquetasAntachawy.LLAVE_IZQ,LexemasAntachawy.LLAVE_IZQ,node)
+        self.consume(EtiquetasAntachawy.SALTO_LINEA,LexemasAntachawy.SALTO_LINEA,node)
         node_lista_sentencias = self.lista_sentencias()
         node_lista_sentencias.parent = node
-        self.consume(EtiquetasAntachawy.LLAVE_DER,node)
+        self.consume(EtiquetasAntachawy.LLAVE_DER,LexemasAntachawy.LLAVE_DER,node)
         return node
     
     def lista_sentencias(self):
@@ -137,7 +141,7 @@ class RecursiveDescentParser:
         elif self.current_token.etiqueta in primeros["Impresiones"]:
             node_impresion = self.impresion()
             node_impresion.parent = node
-        self.consume(EtiquetasAntachawy.SALTO_LINEA, node)
+        self.consume(EtiquetasAntachawy.SALTO_LINEA,LexemasAntachawy.SALTO_LINEA,node)
         return node
     
     def declaraciones(self):
@@ -146,7 +150,7 @@ class RecursiveDescentParser:
         node_tipo.parent = node
         node_id = Node(self.current_token.etiqueta)
         node_id.parent = node
-        self.consume(EtiquetasAntachawy.ID, node_id)
+        self.consume(EtiquetasAntachawy.ID,LexemasAntachawy.ID,node_id)
         node_declaraciones_prime = self.declaraciones_prime()
         node_declaraciones_prime.parent = node
         return node
@@ -156,7 +160,7 @@ class RecursiveDescentParser:
         if self.current_token.etiqueta in primeros["DeclaracionesPrime"]:
             node_asignacion = Node(self.current_token.etiqueta)
             node_asignacion.parent = node
-            self.consume(EtiquetasAntachawy.ASIGNACION, node_asignacion)
+            self.consume(EtiquetasAntachawy.ASIGNACION,LexemasAntachawy.ASIGNA,node_asignacion)
             node_expresion = self.expresion()
             node_expresion.parent = node
         return node
@@ -164,27 +168,27 @@ class RecursiveDescentParser:
     def asignaciones(self):
         node = Node("Asignaciones")
         node_id = Node(self.current_token.etiqueta, parent=node)
-        self.consume(EtiquetasAntachawy.ID, node_id)
+        self.consume(EtiquetasAntachawy.ID,LexemasAntachawy.ID,node_id)
         node_asignacion = Node(self.current_token.etiqueta, parent=node)
-        self.consume(EtiquetasAntachawy.ASIGNACION, node_asignacion)
+        self.consume(EtiquetasAntachawy.ASIGNACION,LexemasAntachawy.ASIGNA,node_asignacion)
         node_expresion = self.expresion()
         node_expresion.parent = node
         return node
     
     def impresion(self):
         node = Node("Impresiones")
-        self.consume(EtiquetasAntachawy.IMPRESION, node)
-        self.consume(EtiquetasAntachawy.PAREN_IZQ, node)
+        self.consume(EtiquetasAntachawy.IMPRESION,LexemasAntachawy.SIQIY,node)
+        self.consume(EtiquetasAntachawy.PAREN_IZQ,LexemasAntachawy.PAREN_IZQ,node)
         node_expresion_impresion = self.expresion_impresion()
         node_expresion_impresion.parent = node
-        self.consume(EtiquetasAntachawy.PAREN_DER, node)
+        self.consume(EtiquetasAntachawy.PAREN_DER,LexemasAntachawy.PAREN_DER,node)
         return node
     
     def tipo(self):
         node = Node("Tipo")
         node_tipo = Node(self.current_token.etiqueta)
         Node(self.current_token.lexema, parent=node_tipo)
-        self.consume(self.current_token.etiqueta, node)
+        self.consume(self.current_token.etiqueta,self.current_token.lexema,node)
         return node
     
     def expresion(self):
@@ -229,31 +233,32 @@ class RecursiveDescentParser:
         node = Node("OperadorAditivo")
         node_aditivo = Node(self.current_token.etiqueta)
         Node(self.current_token.lexema, parent=node_aditivo)
-        self.consume(self.current_token.etiqueta, node)
+        self.consume(self.current_token.etiqueta,self.current_token.lexema,node)
         return node
     
     def operador_multiplicativo(self):
         node = Node("OperadorMultiplicativo")
         node_multiplicativo = Node(self.current_token.etiqueta)
         Node(self.current_token.lexema, parent=node_multiplicativo)
-        self.consume(self.current_token.etiqueta, node)
+        self.consume(self.current_token.etiqueta,self.current_token.lexema,node)
         return node
     
     def termino(self):
         node = Node("Termino")
         if self.current_token.etiqueta in primeros["Termino"]:
             if self.current_token.etiqueta == EtiquetasAntachawy.PAREN_IZQ:
-                self.consume(EtiquetasAntachawy.PAREN_IZQ, node)
+                self.consume(EtiquetasAntachawy.PAREN_IZQ,LexemasAntachawy.PAREN_IZQ,node)
                 node_expresion = self.expresion()
                 node_expresion.parent = node
-                self.consume(EtiquetasAntachawy.PAREN_DER, node)
+                self.consume(EtiquetasAntachawy.PAREN_DER,LexemasAntachawy.PAREN_DER,node)
             else:
                 node_termino = Node(self.current_token.etiqueta)
                 node_termino.parent = node
-                self.consume(self.current_token.etiqueta, node_termino)
+                self.consume(self.current_token.etiqueta,self.current_token.lexema,node_termino)
 
         else:
-            mensaje = f"Error: '{self.current_token.etiqueta}'"
+            lexema = SALTO_DE_LINEA if self.current_token.lexema == '\n' else self.current_token.lexema
+            mensaje = f"Error: '{lexema}'"
             self.panic_mode(mensaje, EtiquetasAntachawy.SALTO_LINEA, parent=node)
         return node
     
@@ -270,7 +275,7 @@ class RecursiveDescentParser:
         if self.current_token is None:
             return node
         if self.current_token.etiqueta in primeros["ExpresionImpresionPrime"]:
-            self.consume(EtiquetasAntachawy.COMA, node)
+            self.consume(EtiquetasAntachawy.COMA,LexemasAntachawy.COMA,node)
             node_expresion_impresion = self.expresion_impresion()
             node_expresion_impresion.parent = node
         return node
