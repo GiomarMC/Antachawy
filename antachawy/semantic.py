@@ -62,9 +62,9 @@ class SemanticAnalyzer:
             self.visit(child)
 
     def visit_declaraciones(self, node):
-        tipo, _ = self.visit(node.children[0])
-        nombre = node.children[1].children[0].name
-        _, valor = self.visit(node.children[2])
+        tipo, _ = self.visit(node.children[0])          #Se va a la función visit_tipo
+        nombre = node.children[1].children[0].name      #Se obtiene el nombre de la variable
+        _, valor = self.visit(node.children[2])         #Se va a la función visit_declaraciones_prime
         try:
             self.symbol_table.add(nombre, tipo, self.current_scope, valor)
         except Exception as e:
@@ -72,7 +72,7 @@ class SemanticAnalyzer:
 
     def visit_declaraciones_prime(self, node):
         if len(node.children) > 1:
-            return self.visit(node.children[1])
+            return self.visit(node.children[1])         #Se va a la funcion visit_Expresion
         return None, None
 
     def visit_asignaciones(self, node):
@@ -87,7 +87,7 @@ class SemanticAnalyzer:
             self.symbol_table.set_value(nombre, valor)
 
     def visit_expresion(self, node):
-        left_type, left_value = self.visit(node.children[0])
+        left_type, left_value = self.visit(node.children[0])        #Se va a la funcion visit_expresion_multiplicativa
         if node.children[1].children:
             operator = node.children[1].children[0].children[0].name
             right_type, right_value = self.visit(node.children[1])
@@ -99,7 +99,8 @@ class SemanticAnalyzer:
         return left_type, left_value
 
     def visit_expresion_multiplicativa(self, node):
-        left_type, left_value = self.visit(node.children[0])
+        left_type, left_value, left_line = self.visit(node.children[0])    #Se va a la funcion visit_termino
+        print(left_line) #Ejecucion normal hasta aqui, muestra las lineas de los terminos
         if node.children[1].children:
             operator = node.children[1].children[0].children[0].name
             right_type, right_value = self.visit(node.children[1])
@@ -142,21 +143,22 @@ class SemanticAnalyzer:
             var_name = child.children[0].name
             var_type = self.symbol_table.get(var_name)
             var_value = self.symbol_table.get_value(var_name)
+            var_line = child.children[0].children[0].name
             if var_type is None:
                 self.errors.append(f"Error: variable '{var_name}' no está definida.")
-            return var_type, var_value
+            return var_type, var_value, var_line
         elif child.name == "ENTERO":
-            return "yupay", int(child.children[0].name)
+            return "yupay", int(child.children[0].name), child.children[0].children[0].name
         elif child.name == "FLOTANTE":
-            return "chunkayuq", float(child.children[0].name)
+            return "chunkayuq", float(child.children[0].name), child.children[0].children[0].name
         elif child.name == "TRUE":
-            return "bool", child.children[0].name
+            return "bool", child.children[0].name, child.children[0].children[0].name
         elif child.name == "FALSE":
-            return "bool", child.children[0].name
+            return "bool", child.children[0].name, child.children[0].children[0].name
         elif child.name == "CARACTER":
-            return "sananpa", child.children[0].name
+            return "sananpa", child.children[0].name, child.children[0].children[0].name
         elif child.name == "CADENA":
-            return "qaytu", child.children[0].name
+            return "qaytu", child.children[0].name, child.children[0].children[0].name
     
     def visit_tipo(self, node):
         return node.children[0].name, None
