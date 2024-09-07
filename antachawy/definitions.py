@@ -33,6 +33,8 @@ class LexemasAntachawy:
     DIFERENTE = "!="                            # !=
     MAYOR_IGUAL = ">="                          # >=
     MENOR_IGUAL = "<="                          # <=
+    Y = "&&"                                    # &&
+    O = "||"                                    # ||
     NUMEROENTERO = "entero"                     # numero
     NUMEROFLOTANTE = "flotante"                 # flotante
     CARACTER = "caracter"                       # caracter
@@ -53,7 +55,6 @@ class EtiquetasAntachawy:
     MENOS = "MENOS"
     MULTIPLICA = "MULTIPLICA"
     DIVIDE = "DIVIDE"
-    OPERADOR_RACIONAL = "OPERADOR_RACIONAL"
     IMPRESION = "IMPRESION"
     BUCLE_FOR = "BUCLE_FOR"
     BUCLE_WHILE = "BUCLE_WHILE"
@@ -73,6 +74,14 @@ class EtiquetasAntachawy:
     TRUE = "TRUE"
     FALSE = "FALSE"
     ID = "ID"
+    MAYOR = "MAYOR"
+    MENOR = "MENOR"
+    IGUAL = "IGUAL"
+    DIFERENTE = "DIFERENTE"
+    MAYOR_IGUAL = "MAYOR_IGUAL"
+    MENOR_IGUAL = "MENOR_IGUAL"
+    Y = "OPERADOR_Y"
+    O = "OPERADOR_O"
 
 lexema_a_etiqueta = {
     LexemasAntachawy.QHAPAQ:            EtiquetasAntachawy.PROGRAMA,
@@ -101,24 +110,28 @@ lexema_a_etiqueta = {
     LexemasAntachawy.MENOS:             EtiquetasAntachawy.MENOS,
     LexemasAntachawy.MULTIPLICA:        EtiquetasAntachawy.MULTIPLICA,
     LexemasAntachawy.DIVIDE:            EtiquetasAntachawy.DIVIDE,
-    LexemasAntachawy.MAYOR:             EtiquetasAntachawy.OPERADOR_RACIONAL,
-    LexemasAntachawy.MENOR:             EtiquetasAntachawy.OPERADOR_RACIONAL,
-    LexemasAntachawy.IGUAL:             EtiquetasAntachawy.OPERADOR_RACIONAL,
-    LexemasAntachawy.DIFERENTE:         EtiquetasAntachawy.OPERADOR_RACIONAL,
-    LexemasAntachawy.MAYOR_IGUAL:       EtiquetasAntachawy.OPERADOR_RACIONAL,
-    LexemasAntachawy.MENOR_IGUAL:       EtiquetasAntachawy.OPERADOR_RACIONAL,
+    LexemasAntachawy.MAYOR:             EtiquetasAntachawy.MAYOR,
+    LexemasAntachawy.MENOR:             EtiquetasAntachawy.MENOR,
+    LexemasAntachawy.IGUAL:             EtiquetasAntachawy.IGUAL,
+    LexemasAntachawy.DIFERENTE:         EtiquetasAntachawy.DIFERENTE,
+    LexemasAntachawy.MAYOR_IGUAL:       EtiquetasAntachawy.MAYOR_IGUAL,
+    LexemasAntachawy.MENOR_IGUAL:       EtiquetasAntachawy.MENOR_IGUAL,
+    LexemasAntachawy.Y:                 EtiquetasAntachawy.Y,
+    LexemasAntachawy.O:                 EtiquetasAntachawy.O,
     LexemasAntachawy.NUMEROENTERO:      EtiquetasAntachawy.NUMEROENTERO,
     LexemasAntachawy.NUMEROFLOTANTE:    EtiquetasAntachawy.NUMEROFLOTANTE,
     LexemasAntachawy.CARACTER:          EtiquetasAntachawy.CARACTER,
     LexemasAntachawy.CADENA:            EtiquetasAntachawy.CADENA,
-    LexemasAntachawy.ID:                EtiquetasAntachawy.ID
+    LexemasAntachawy.ID:                EtiquetasAntachawy.ID,
 }
 
 simbolos_compuestos = {
-    "==": EtiquetasAntachawy.OPERADOR_RACIONAL,
-    "!=": EtiquetasAntachawy.OPERADOR_RACIONAL,
-    "<=": EtiquetasAntachawy.OPERADOR_RACIONAL,
-    ">=": EtiquetasAntachawy.OPERADOR_RACIONAL
+    "==": EtiquetasAntachawy.IGUAL,
+    "!=": EtiquetasAntachawy.DIFERENTE,
+    "<=": EtiquetasAntachawy.MENOR_IGUAL,
+    ">=": EtiquetasAntachawy.MAYOR_IGUAL,
+    "&&": EtiquetasAntachawy.Y,
+    "||": EtiquetasAntachawy.O
 }
 
 primeros = {
@@ -155,6 +168,10 @@ primeros = {
         "$",
     ],
     "Asignaciones": [EtiquetasAntachawy.ID],
+    "Condicional": [EtiquetasAntachawy.CONDICION_ARI],
+    "CondicionalPrime": [
+        EtiquetasAntachawy.CONDICION_MANA_CHAYQA_ARI,
+        EtiquetasAntachawy.CONDICION_MANA_CHAYQA],
     "Impresiones": [EtiquetasAntachawy.IMPRESION],
     "Tipo": [
         EtiquetasAntachawy.TIPO_YUPAY,
@@ -193,6 +210,26 @@ primeros = {
         EtiquetasAntachawy.TRUE,
         EtiquetasAntachawy.FALSE
     ],
+    "ExpresionCondicion": [
+        EtiquetasAntachawy.PAREN_IZQ,
+        EtiquetasAntachawy.ID,
+        EtiquetasAntachawy.NUMEROENTERO,
+        EtiquetasAntachawy.NUMEROFLOTANTE,
+        EtiquetasAntachawy.CARACTER,
+        EtiquetasAntachawy.CADENA,
+        EtiquetasAntachawy.TRUE,
+        EtiquetasAntachawy.FALSE
+    ],
+    "ExpresionOperadorRelacional": [
+        EtiquetasAntachawy.PAREN_IZQ,
+        EtiquetasAntachawy.ID,
+        EtiquetasAntachawy.NUMEROENTERO,
+        EtiquetasAntachawy.NUMEROFLOTANTE,
+        EtiquetasAntachawy.CARACTER,
+        EtiquetasAntachawy.CADENA,
+        EtiquetasAntachawy.TRUE,
+        EtiquetasAntachawy.FALSE
+    ],
     "OperadorAditivo": [
         EtiquetasAntachawy.MAS,
         EtiquetasAntachawy.MENOS
@@ -200,6 +237,18 @@ primeros = {
     "OperadorMultiplicativo": [
         EtiquetasAntachawy.MULTIPLICA,
         EtiquetasAntachawy.DIVIDE
+    ],
+    "OperadorRelacional": [
+        EtiquetasAntachawy.MAYOR,
+        EtiquetasAntachawy.MENOR,
+        EtiquetasAntachawy.IGUAL,
+        EtiquetasAntachawy.DIFERENTE,
+        EtiquetasAntachawy.MAYOR_IGUAL,
+        EtiquetasAntachawy.MENOR_IGUAL
+    ],
+    "OperadorLogico": [
+        EtiquetasAntachawy.Y,
+        EtiquetasAntachawy.O
     ],
     "Termino": [
         EtiquetasAntachawy.PAREN_IZQ,
