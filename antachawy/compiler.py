@@ -73,8 +73,7 @@ class Compiler:
         analyzer = SemanticAnalyzer(self.code)
         analyzer.analyze(tree)
         if analyzer.errors:
-            for error in analyzer.errors:
-                print(error)
+            self.console_handler.show_errors(analyzer.errors)
             return False
         print("--> Semantic Analysis Passed")
         if self.debug:
