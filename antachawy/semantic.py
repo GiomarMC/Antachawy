@@ -12,6 +12,9 @@ class SemanticAnalyzer:
         self.print_table = print_table
         self.source_code = source_code
 
+    def get_current_line_content(self, line):
+        return self.source_code.get_line(line)
+
     def visit(self, node):
         if node.name == "Programa":
             self.visit_programa(node)
@@ -39,6 +42,10 @@ class SemanticAnalyzer:
             return self.visit_termino(node)
         elif node.name == "Tipo":
             return self.visit_tipo(node)
+        elif node.name == "OperadorMultiplicativo":
+            return node.children[0].name
+        elif node.name == "OperadorAditivo":
+            return node.children[0].name
         elif node.name == "Impresiones":
             self.visit_impresiones(node)
         return None, None
@@ -77,12 +84,19 @@ class SemanticAnalyzer:
 
     def visit_asignaciones(self, node):
         nombre = node.children[0].children[0].name
-        expresion_tipo, valor = self.visit(node.children[2])
+        line = node.children[0].children[0].children[0].name
+        expresion_tipo, valor = self.visit(node.children[2])        #Se va a la funcion visit_expresion
         tipo = self.symbol_table.get(nombre)
         if tipo is None:
-            self.errors.append(f"Error: Variable '{nombre}' no declarada.")
+            self.errors.append({
+                "mensaje": f"Error: Variable '{nombre}' no declarada.",
+                "linea": line,
+                "contenido": self.get_current_line_content(line)})
         if tipo != expresion_tipo:
-            self.errors.append(f"Error de tipo: Variable '{nombre}' es de tipo '{tipo}' y la expresión es de tipo '{expresion_tipo}'.")
+            self.errors.append({
+                "mensaje": f"Error de tipo: Variable '{nombre}' es de tipo '{tipo}' y la expresión es de tipo '{expresion_tipo}'.",
+                "linea": line,
+                "contenido": self.get_current_line_content(line)})
         else:
             self.symbol_table.set_value(nombre, valor)
 
@@ -90,48 +104,65 @@ class SemanticAnalyzer:
         left_type, left_value = self.visit(node.children[0])        #Se va a la funcion visit_expresion_multiplicativa
         if node.children[1].children:
             operator = node.children[1].children[0].children[0].name
-            right_type, right_value = self.visit(node.children[1])
+            line = node.children[1].children[0].children[0].children[0].name
+            right_type, right_value = self.visit(node.children[1])  #Se va a la funcion visit_expresion_aditiva_prime
             if left_value and right_value:
                 if left_type != right_type:
-                    self.errors.append(f"Error de tipo: operación entre tipos '{left_type}' y '{right_type}' no permitida.")
+                    self.errors.append({
+                        "mensaje": f"Error de tipo: operación entre tipos '{left_type}' y '{right_type}' no permitida.",
+                        "linea": line,
+                        "contenido": self.get_current_line_content(line)})
                 valor = f"{left_value} {operator} {right_value}"
                 return left_type, valor
         return left_type, left_value
 
     def visit_expresion_multiplicativa(self, node):
-        left_type, left_value, left_line = self.visit(node.children[0])    #Se va a la funcion visit_termino
-        print(left_line) #Ejecucion normal hasta aqui, muestra las lineas de los terminos
+        left_type, left_value, left_line = self.visit(node.children[0])     #Se va a la funcion visit_termino
         if node.children[1].children:
             operator = node.children[1].children[0].children[0].name
-            right_type, right_value = self.visit(node.children[1])
+            right_type, right_value = self.visit(node.children[1])          #Se va a la funcion visit_expresion_multiplicativa_prime
             if left_value and right_value:
                 if left_type != right_type:
-                    self.errors.append(f"Error de tipo: operación entre tipos '{left_type}' y '{right_type}' no permitida.")
+                    self.errors.append({
+                        "mensaje": f"Error de tipo: operación entre tipos '{left_type}' y '{right_type}' no permitida.",
+                        "linea": left_line,
+                        "contenido": self.get_current_line_content(left_line)})
                 valor = f"{left_value} {operator} {right_value}"
                 return left_type, valor
         return left_type, left_value
     
     def visit_expresion_aditiva_prime(self, node):
         if node.children:
-            left_type, left_value = self.visit(node.children[1])
+            left_type, left_value = self.visit(node.children[1])            #Se va a la funcion visit_expresion_multiplicativa
             operator = node.children[0].children[0].name
-            right_type, right_value = self.visit(node.children[2])
+            line = node.children[0].children[0].children[0].name
+            right_type, right_value = self.visit(node.children[2])          #Se va a la funcion visit_expresion_aditiva_prime
             if left_value and right_value:
                 if left_type != right_type:
-                    self.errors.append(f"Error de tipo: operación entre tipos '{left_type}' y '{right_type}' no permitida.")
+                    self.errors.append({
+                        "mensaje": f"Error de tipo: operación entre tipos '{left_type}' y '{right_type}' no permitida.",
+                        "linea": line,
+                        "contenido": self.get_current_line_content(line)})
                 valor = f"{left_value} {operator} {right_value}"
+                return left_type, valor
+            elif left_value and not right_value:
+                valor = f"{operator} {left_value}"
                 return left_type, valor
             return left_type, left_value
         return None, None
     
     def visit_expresion_multiplicativa_prime(self, node):
         if node.children:
-            left_type, left_value = self.visit(node.children[1])
-            operator = node.children[0].children[0].name
-            right_type, right_value = self.visit(node.children[2])
+            left_type, left_value, left_line = self.visit(node.children[1])   #Se va a la funcion visit_termino
+            if node.children[2].children:
+                operator = self.visit(node.children[2].children[0])                          #Se obtiene el operador
+            right_type, right_value = self.visit(node.children[2])         #Se va a la funcion visit_expresion_multiplicativa_prime
             if left_value and right_value:
                 if left_type != right_type:
-                    self.errors.append(f"Error de tipo: operación entre tipos '{left_type}' y '{right_type}' no permitida.")
+                    self.errors.append({
+                        "mensaje": f"Error de tipo: operación entre tipos '{left_type}' y '{right_type}' no permitida.",
+                        "linea": left_line,
+                        "contenido": self.get_current_line_content(left_line)})
                 valor = f"{left_value} {operator} {right_value}"
                 return left_type, valor
             return left_type, left_value
@@ -145,7 +176,10 @@ class SemanticAnalyzer:
             var_value = self.symbol_table.get_value(var_name)
             var_line = child.children[0].children[0].name
             if var_type is None:
-                self.errors.append(f"Error: variable '{var_name}' no está definida.")
+                self.errors.append({
+                    "mensaje": f"Error: variable '{var_name}' no está definida.",
+                    "linea": var_line,
+                    "contenido": self.get_current_line_content(var_line)})
             return var_type, var_value, var_line
         elif child.name == "ENTERO":
             return "yupay", int(child.children[0].name), child.children[0].children[0].name
