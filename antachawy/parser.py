@@ -141,9 +141,110 @@ class RecursiveDescentParser:
         elif self.current_token.etiqueta in primeros["Impresiones"]:
             node_impresion = self.impresion()
             node_impresion.parent = node
+        elif self.current_token.etiqueta in primeros["Condicional"]:
+            node_condicional = self.condicional()
+            node_condicional.parent = node
         self.consume(EtiquetasAntachawy.SALTO_LINEA,LexemasAntachawy.SALTO_LINEA,node)
         return node
     
+    def condicional(self):
+        node = Node("Condicional")
+        self.consume(EtiquetasAntachawy.CONDICION_ARI, LexemasAntachawy.ARI, node)
+        self.consume(EtiquetasAntachawy.PAREN_IZQ, LexemasAntachawy.PAREN_IZQ, node)
+        node_expresion = self.expresion_condicion()
+        node_expresion.parent = node
+        self.consume(EtiquetasAntachawy.PAREN_DER, LexemasAntachawy.PAREN_DER, node)
+        self.consume(EtiquetasAntachawy.SALTO_LINEA, LexemasAntachawy.SALTO_LINEA, node)
+        self.consume(EtiquetasAntachawy.LLAVE_IZQ, LexemasAntachawy.LLAVE_IZQ, node)
+        self.consume(EtiquetasAntachawy.SALTO_LINEA, LexemasAntachawy.SALTO_LINEA, node)
+        node_lista_sentencias = self.lista_sentencias()
+        node_lista_sentencias.parent = node
+        self.consume(EtiquetasAntachawy.LLAVE_DER, LexemasAntachawy.LLAVE_DER, node)
+        self.consume(EtiquetasAntachawy.SALTO_LINEA, LexemasAntachawy.SALTO_LINEA, node)
+        node_condicional_prime = self.condicional_prime()
+        node_condicional_prime.parent = node
+        return node
+
+    def condicional_prime(self):
+        node = Node("CondicionalPrime")
+        if self.current_token.etiqueta == EtiquetasAntachawy.CONDICION_MANA_CHAYQA_ARI:
+            self.consume(EtiquetasAntachawy.CONDICION_MANA_CHAYQA_ARI, LexemasAntachawy.MANA_CHAYQA_ARI, node)
+            self.consume(EtiquetasAntachawy.PAREN_IZQ, LexemasAntachawy.PAREN_IZQ, node)
+            node_expresion = self.expresion_condicion()
+            node_expresion.parent = node
+            self.consume(EtiquetasAntachawy.PAREN_DER, LexemasAntachawy.PAREN_DER, node)
+            self.consume(EtiquetasAntachawy.SALTO_LINEA, LexemasAntachawy.SALTO_LINEA, node)
+            self.consume(EtiquetasAntachawy.LLAVE_IZQ, LexemasAntachawy.LLAVE_IZQ, node)
+            self.consume(EtiquetasAntachawy.SALTO_LINEA, LexemasAntachawy.SALTO_LINEA, node)
+            node_lista_sentencias = self.lista_sentencias()
+            node_lista_sentencias.parent = node
+            self.consume(EtiquetasAntachawy.LLAVE_DER, LexemasAntachawy.LLAVE_DER, node)
+            self.consume(EtiquetasAntachawy.SALTO_LINEA, LexemasAntachawy.SALTO_LINEA, node)
+            node_condicional_prime = self.condicional_prime()
+            node_condicional_prime.parent = node
+
+        elif self.current_token.etiqueta == EtiquetasAntachawy.CONDICION_MANA_CHAYQA:
+            self.consume(EtiquetasAntachawy.CONDICION_MANA_CHAYQA, LexemasAntachawy.MANA_CHAYQA, node)
+            self.consume(EtiquetasAntachawy.SALTO_LINEA, LexemasAntachawy.SALTO_LINEA, node)
+            self.consume(EtiquetasAntachawy.LLAVE_IZQ, LexemasAntachawy.LLAVE_IZQ, node)
+            self.consume(EtiquetasAntachawy.SALTO_LINEA, LexemasAntachawy.SALTO_LINEA, node)
+            node_lista_sentencias = self.lista_sentencias()
+            node_lista_sentencias.parent = node
+            self.consume(EtiquetasAntachawy.LLAVE_DER, LexemasAntachawy.LLAVE_DER, node)
+        return node
+
+    def expresion_condicion(self):
+        node = Node("ExpresionCondicion")
+        if self.current_token.etiqueta in primeros["ExpresionCondicion"]:
+            node_expresion = self.expresion_relacional()
+            node_expresion.parent = node
+            node_expresion_condicion_prime = self.expresion_condicion_prime()
+            node_expresion_condicion_prime.parent = node
+        else:
+            lexema = SALTO_DE_LINEA if self.current_token.lexema == '\n' else self.current_token.lexema
+            mensaje = f"Error: '{lexema}' no es una expresión condicional"
+            self.panic_mode(mensaje, EtiquetasAntachawy.SALTO_LINEA, parent=node)
+        return node
+
+    def expresion_condicion_prime(self):
+        node = Node("ExpresionCondicionPrime")
+        if self.current_token.etiqueta in primeros["ExpresionCondicionPrime"]:
+            node_operador_logico = self.operador_logico()
+            node_operador_logico.parent = node
+            node_expresion_condicion = self.expresion_condicion()
+            node_expresion_condicion.parent = node
+        return node
+
+    def expresion_relacional(self):
+        node = Node("ExpresionRelacional")
+        node_expresion = self.termino()
+        node_expresion.parent = node
+        node_operador_relacional = self.operador_relacional()
+        node_operador_relacional.parent = node
+        node_expresion_relacional = self.termino()
+        node_expresion_relacional.parent = node
+        return node
+
+    def operador_logico(self):
+        node = Node("OperadorLogico")
+        if self.current_token.etiqueta in primeros["OperadorLogico"]:
+            node_logico = Node(self.current_token.etiqueta)
+            Node(self.current_token.lexema, parent=node_logico)
+            self.consume(self.current_token.etiqueta,self.current_token.lexema,node)
+        return node
+
+    def operador_relacional(self):
+        node = Node("OperadorRelacional")
+        if self.current_token.etiqueta in primeros["OperadorRelacional"]:
+            node_relacional = Node(self.current_token.etiqueta)
+            Node(self.current_token.lexema, parent=node_relacional)
+            self.consume(self.current_token.etiqueta,self.current_token.lexema,node)
+        else:
+            lexema = SALTO_DE_LINEA if self.current_token.lexema == '\n' else self.current_token.lexema
+            mensaje = f"Error: '{lexema}' no es un operador relacional"
+            self.panic_mode(mensaje, EtiquetasAntachawy.SALTO_LINEA, parent=node)
+        return node
+
     def declaraciones(self):
         node = Node("Declaraciones")
         node_tipo = self.tipo()
