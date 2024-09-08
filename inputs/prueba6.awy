@@ -1,8 +1,17 @@
 qhapaq () 
 {
-    yupay a = 1
-    yupay b = 2
-    yupay c
-    c = 10 / a * 4 + 8 + 5 - 3 * 3 * 5 * 7 / 2
-    siqiy ( c )
+    yupay edad = 25
+    chunkayuq salario = 1500.50
+    ari (edad > 18) 
+    {
+        siqiy (edad, " es mayor de edad.")
+    }
+    mana_chayqa_ari (salario < 1000) 
+    {
+        siqiy ("Salario bajo.")
+    }
+    mana_chayqa 
+    {
+        siqiy ("Salario suficiente.")
+    }
 }
