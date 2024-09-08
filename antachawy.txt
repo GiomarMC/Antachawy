@@ -25,7 +25,7 @@ ExpresionMultiplicativa -> Termino ExpresionMultiplicativaPrime .
 ExpresionMultiplicativaPrime -> OperadorMultiplicativo Termino ExpresionMultiplicativaPrime | ε .
 ExpresionCondicion -> ExpresionRelacional ExpresionCondicionPrime .
 ExpresionCondicionPrime -> OperadorLogico ExpresionCondicion | ε .
-ExpresionRelacional -> Expresion OperadorRelacional Expresion .
+ExpresionRelacional -> Termino OperadorRelacional Termino .
 OperadorAditivo -> + | menos .
 OperadorMultiplicativo -> * | / .
 OperadorRelacional -> mayor | menor | menorigual | mayorigual | igual | diferente .
