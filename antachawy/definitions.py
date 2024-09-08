@@ -145,7 +145,8 @@ primeros = {
         EtiquetasAntachawy.TIPO_QAYTU,
         EtiquetasAntachawy.TIPO_BOOL,
         EtiquetasAntachawy.IMPRESION,
-        EtiquetasAntachawy.ID
+        EtiquetasAntachawy.ID,
+        EtiquetasAntachawy.CONDICION_ARI,
     ],
     "Sentencias": [
         EtiquetasAntachawy.TIPO_YUPAY,
@@ -154,7 +155,8 @@ primeros = {
         EtiquetasAntachawy.TIPO_QAYTU,
         EtiquetasAntachawy.TIPO_BOOL,
         EtiquetasAntachawy.IMPRESION,
-        EtiquetasAntachawy.ID
+        EtiquetasAntachawy.ID,
+        EtiquetasAntachawy.CONDICION_ARI,
     ],
     "Declaraciones": [
         EtiquetasAntachawy.TIPO_YUPAY,
@@ -219,6 +221,10 @@ primeros = {
         EtiquetasAntachawy.CADENA,
         EtiquetasAntachawy.TRUE,
         EtiquetasAntachawy.FALSE
+    ],
+    "ExpresionCondicionPrime": [
+        EtiquetasAntachawy.Y,
+        EtiquetasAntachawy.O,
     ],
     "ExpresionOperadorRelacional": [
         EtiquetasAntachawy.PAREN_IZQ,
