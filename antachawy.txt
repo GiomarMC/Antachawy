@@ -9,9 +9,9 @@ Sentencias -> Declaraciones newline
 Declaraciones -> Tipo id DeclaracionesPrime .
 DeclaracionesPrime -> asignacion Expresion | ε .
 Asignaciones -> id asignacion Expresion .
-Condicional -> ari (ExpresionCondicion) newline lbrace newline ListaSentencias rbrace CondicionalPrime .
-CondicionalPrime -> mana_chayqa_ari (ExpresionCondicion) newline lbrace newline ListaSentencias rbrace CondicionalPrime
-					| mana_chayqa newline lbrace newline ListaSentencias rbrace
+Condicional -> ari (ExpresionCondicion) newline lbrace newline ListaSentencias rbrace newline CondicionalPrime .
+CondicionalPrime -> mana_chayqa_ari (ExpresionCondicion) newline lbrace newline ListaSentencias rbrace newline CondicionalPrime
+					| mana_chayqa newline lbrace newline ListaSentencias rbrace newline
 					| ε .
 Impresiones -> siqiy ( ExpresionImpresion ) .
 Tipo -> yupay
