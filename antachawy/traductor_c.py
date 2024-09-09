@@ -62,7 +62,20 @@ int main() {
                                 print_statement += "\"false\", "
                     print_statement = print_statement.rstrip(', ') + ");\n"
                     c_code += print_statement
-
+            elif parts[0] == "IF" and parts[3] == "GOTO":
+                condition = parts[2]
+                label = parts[4]
+                c_code += f"    if (!{condition}) goto {label};\n"
+            
+            # Traducción de saltos: GOTO <etiqueta>
+            elif parts[0] == "GOTO":
+                label = parts[1]
+                c_code += f"    goto {label};\n"
+            
+            # Traducción de etiquetas: <etiqueta>:
+            elif parts[0].endswith(":"):
+                label = parts[0]
+                c_code += f"{label}\n"
         c_code += """
     return 0;
 }
