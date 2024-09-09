@@ -8,11 +8,17 @@ class IntermediateCodeGenerator:
         self.current_scope = "global"
         self.intermediate_code = []
         self.temp_count = 0
+        self.label_count = 0
 
     def new_temp(self):
         temp_name = f"t{self.temp_count}"
         self.temp_count += 1
         return temp_name
+    
+    def new_label(self):
+        label_name = f"L{self.label_count}"
+        self.label_count += 1
+        return label_name
 
     def visit(self, node):
         if node.name == "Programa":
@@ -31,6 +37,16 @@ class IntermediateCodeGenerator:
             self.visit_asignaciones(node)
         elif node.name == "Impresiones":
             self.visit_impresiones(node)
+        elif node.name == "Condicional":
+            self.visit_condicional(node)
+        elif node.name == "CondicionalPrime":
+            self.visit_condicional_prime(node)
+        elif node.name == "ExpresionCondicion":
+            self.visit_expresion_condicion(node)
+        elif node.name == "ExpresionRelacional":
+            self.visit_expresion_relacional(node)
+        elif node.name == "ExpresionCondicionPrime":
+            self.visit_expresion_condicion_prime(node)
         elif node.name == "Expresion":
             return self.visit_expresion(node)
         elif node.name == "ExpresionMultiplicativa":
@@ -148,6 +164,94 @@ class IntermediateCodeGenerator:
                 return left_type, temp
             return left_type, left_value
         return None, None
+    
+    def visit_condicional(self, node):
+        # Etiquetas para manejar el flujo condicional
+        etiqueta_else = self.new_label()  # Para el bloque "else if" o "else"
+        etiqueta_fin = self.new_label()  # Para el final del condicional
+
+        # Evaluamos la condición del if (ari)
+        condicion_temp = self.visit_expresion_condicion(node.children[2])
+
+        # Código para el salto condicional
+        self.intermediate_code.append(f"IF NOT {condicion_temp} GOTO {etiqueta_else}")
+
+        # Visitamos el bloque de sentencias dentro del "if"
+        self.visit_lista_sentencias(node.children[7])
+
+        # Salto al final del condicional
+        self.intermediate_code.append(f"GOTO {etiqueta_fin}")
+
+        # Etiqueta para el bloque else if o else
+        self.intermediate_code.append(f"{etiqueta_else}:")
+
+        # Visitamos el bloque "else if" o "else" si existen
+        if node.children[10].children:
+            self.visit_condicional_prime(node.children[10])
+
+        # Etiqueta para el final del condicional
+        self.intermediate_code.append(f"{etiqueta_fin}:")
+
+    def visit_condicional_prime(self, node): #Visita todos los nodos de la condicional prime
+        if node.children[0].name == "mana_chayqa_ari":
+            # Etiqueta para el siguiente bloque else if o else
+            etiqueta_else = self.new_label()
+
+            # Evaluamos la nueva condición del else if (mana_chayqa_ari)
+            condicion_temp = self.visit_expresion_condicion(node.children[2])
+
+            # Código para el salto condicional
+            self.intermediate_code.append(f"IF NOT {condicion_temp} GOTO {etiqueta_else}")
+
+            # Visitamos el bloque de sentencias dentro del "else if"
+            self.visit_lista_sentencias(node.children[7])
+
+            # Salto al final del condicional
+            etiqueta_fin = self.new_label()
+            self.intermediate_code.append(f"GOTO {etiqueta_fin}")
+
+            # Etiqueta para el bloque else if o else
+            self.intermediate_code.append(f"{etiqueta_else}:")
+
+            # Visitamos el próximo "else if" o "else" si existe
+            if node.children[10].children:
+                self.visit_condicional_prime(node.children[10])
+
+            # Etiqueta final para saltar fuera del condicional
+            self.intermediate_code.append(f"{etiqueta_fin}:")
+        elif node.name == "mana_chayqa":
+            # Si hay un bloque "else", visitamos sus sentencias
+            self.visit_lista_sentencias(node.children[4])
+
+    def visit_expresion_condicion(self, node):
+        print("Visitando expresion condicion")
+        left_value = self.visit(node.children[0])                                   # Visitamos la primera expresión relacional
+        print(left_value)
+        # Si hay operadores lógicos adicionales (AND, OR)
+        right_value = self.visit_expresion_condicion_prime(node.children[1])        # Visitamos la siguiente expresión condicional si existe
+        temp = self.new_temp()
+        if right_value:
+            self.intermediate_code.append(f"{temp} = {left_value} {right_value}")
+            return temp
+        else:
+            self.intermediate_code.append(f"{temp} = {left_value}")
+        return temp
+
+    def visit_expresion_relacional(self, node):
+        print("Visitando expresion relacional")
+        _, left_value = self.visit(node.children[0])            # Visitamos el primer término
+        operator = node.children[1].children[0].name            # Obtenemos el operador relacional
+        _, right_value = self.visit(node.children[2])           # Visitamos el segundo término
+        temp = f"{left_value} {operator} {right_value}"         # Concatenamos los valores para la expresión relacional
+        return temp                                             # Retornamos el nombre del temporal a la funcion visit_expresion_condicion
+    
+    def visit_expresion_condicion_prime(self, node):
+        if node.children:
+            operator = node.children[0].children[0].name
+            _, right_value = self.visit(node.children[1])
+            print(node.children[1].name)
+            print(operator, right_value)
+        return None
         
     def visit_termino(self, node):
         child = node.children[0]
