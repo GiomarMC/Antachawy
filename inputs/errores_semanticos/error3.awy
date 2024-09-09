@@ -1,0 +1,31 @@
+qhapaq () 
+{
+    yupay edad = 25
+    chunkayuq salario = 1500.50
+    ari (edad < 18)
+    {
+        siqiy (salario, " no puede trabajar, es menor de edad.")
+    }
+    mana_chayqa_ari (salario < 1000)
+    {
+        siqiy ("Salario bajo.")
+    }
+    mana_chayqa
+    {
+        siqiy (edad, "Salario suficiente.")
+    }
+
+    ari (edad > salario)
+    {
+        siqiy (edad, "es mayor")
+    }
+    mana_chayqa
+    {
+        siqiy (salario, "es mayor")
+    }
+
+    yupay valor
+    siqiy (valor)
+    edad = "25"
+    chunkayuq flotante_valor = edad * 2.5
+}
