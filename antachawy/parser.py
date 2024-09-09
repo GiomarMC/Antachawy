@@ -191,6 +191,7 @@ class RecursiveDescentParser:
             node_lista_sentencias = self.lista_sentencias()
             node_lista_sentencias.parent = node
             self.consume(EtiquetasAntachawy.LLAVE_DER, LexemasAntachawy.LLAVE_DER, node)
+            self.consume(EtiquetasAntachawy.SALTO_LINEA, LexemasAntachawy.SALTO_LINEA, node)
         return node
 
     def expresion_condicion(self):
