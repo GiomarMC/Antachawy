@@ -6,7 +6,7 @@ qhapaq ()
     {
         siqiy (edad, " es mayor de edad.")
     }
-    mana_chayqa_ari (salario < 1000) 
+    mana_chayqa_ari (salario < 1000.0 && salario > 800.0) 
     {
         siqiy ("Salario bajo.")
     }
@@ -14,4 +14,5 @@ qhapaq ()
     {
         siqiy ("Salario suficiente.")
     }
+
 }
