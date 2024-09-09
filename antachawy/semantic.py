@@ -48,6 +48,16 @@ class SemanticAnalyzer:
             return node.children[0].name
         elif node.name == "Impresiones":
             self.visit_impresiones(node)
+        elif node.name == "Condicional":
+            self.visit_condicional(node)
+        elif node.name == "CondicionalPrime":
+            self.visit_condicional_prime(node)
+        elif node.name == "ExpresionCondicion":
+            self.visit_expresion_condicion(node)
+        elif node.name == "ExpresionRelacional":
+            self.visit_expresion_relacional(node)
+        elif node.name == "ExpresionCondicionPrime":
+            self.visit_expresion_condicion_prime(node)
         return None, None
 
     def visit_programa(self, node):
@@ -60,11 +70,11 @@ class SemanticAnalyzer:
             self.visit(child)
         self.current_scope = "global"
 
-    def visit_lista_sentencias(self, node):
+    def visit_lista_sentencias(self, node): #Visita todos los nodos de la lista de sentencias
         for child in node.children:
             self.visit(child)
 
-    def visit_sentencias(self, node):
+    def visit_sentencias(self, node): #Visita todos los nodos de las sentencias
         for child in node.children:
             self.visit(child)
 
@@ -81,6 +91,34 @@ class SemanticAnalyzer:
         if len(node.children) > 1:
             return self.visit(node.children[1])         #Se va a la funcion visit_Expresion
         return None, None
+
+    def visit_condicional(self, node): #Visita todos los nodos de la condicional
+        for child in node.children:
+            self.visit(child)
+
+    def visit_condicional_prime(self, node): #Visita todos los nodos de la condicional prime
+        if node.children:
+            for child in node.children:
+                self.visit(child)
+
+    def visit_expresion_condicion(self, node): #Visita todos los nodos de la expresion condicional
+        for child in node.children:
+            self.visit(child)
+
+    def visit_expresion_relacional(self, node):
+        left_type, left_value, left_line = self.visit(node.children[0])     #Se va a la funcion visit_termino
+        right_type, right_value, rigth_line = self.visit(node.children[2])  #Se va a la funcion visit_termino
+        if left_value and right_value:
+            if left_type != right_type:
+                self.errors.append({
+                    "mensaje": f"Error de tipo: operación entre tipos '{left_type}' y '{right_type}' no permitida.",
+                    "linea": left_line,
+                    "contenido": self.get_current_line_content(left_line)})
+
+    def visit_expresion_condicion_prime(self, node):    #Visita todos los nodos de la expresion condicional prime
+        if node.children:
+            for child in node.children:
+                self.visit(child)
 
     def visit_asignaciones(self, node):
         nombre = node.children[0].children[0].name
