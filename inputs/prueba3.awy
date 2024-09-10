@@ -3,5 +3,5 @@ qhapaq ()
     bool flag = yanqa
     qaytu name = "Antachawy"
     chunkayuq pi = 3.14
-    siqiy ( flag, name, pi )
+    siqiy ( flag, " ", name, " ",pi)
 }
