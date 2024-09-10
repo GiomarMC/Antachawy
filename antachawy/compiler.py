@@ -6,6 +6,7 @@ from antachawy.intermediate import IntermediateCodeGenerator
 from antachawy.optimizer import IntermediateCodeOptimizer
 from antachawy.traductor_c import CodeTranslator
 from antachawy.sourcecode import SourceCode
+from antachawy.antachawy_translator import AntachawyToCppTranslator
 import subprocess
 import os
 import platform
@@ -38,11 +39,8 @@ class Compiler:
         
         if not self.perform_semantic_analysis(tree):
             return False
-
-        code = self.generate_intermediate_code(tree)
-        codigo = self.optimize_intermediate_code(code)
-        self.translate_to_c(codigo)
-        self.compile_c_code("programa.c", self.output_file)
+        self.translate_antachawy_to_c()
+        self.compile_c_code("programa.cpp", self.output_file)
         return True
 
     def perform_lexical_analysis(self):
@@ -105,9 +103,16 @@ class Compiler:
         print("--> Translated to C")
         return True
     
+    def translate_antachawy_to_c(self):
+        translator = AntachawyToCppTranslator(self.code)
+        translated_code = translator.translate()
+        translator.save_translated_code("programa.cpp")
+        print("--> Translated to C++")
+        return True
+    
     def compile_c_code(self, source_file, output_file):
         try:
-            compile_command = ["gcc", source_file, "-o", output_file]
+            compile_command = ["g++", source_file, "-o", output_file]
             result = subprocess.run(compile_command, check=True, capture_output=True, text=True)
             print(f"--> Compilation successful. Executable created: {output_file}")
             print(result.stdout)
