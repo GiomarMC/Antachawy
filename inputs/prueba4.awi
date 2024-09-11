@@ -4,5 +4,5 @@ qhapaq ()
     yupay b = 2
     yupay c
     c = 10 / a + 8 * 3
-    siqiy ( c )
+    rikuchiy ( c )
 }

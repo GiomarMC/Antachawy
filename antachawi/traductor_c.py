@@ -1,4 +1,4 @@
-from antachawy.shared import symbol_table, print_table
+from antachawi.shared import symbol_table, print_table
 
 class CodeTranslator:
     def __init__(self, optimized_code):

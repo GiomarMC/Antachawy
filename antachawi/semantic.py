@@ -1,6 +1,6 @@
-from antachawy.symboltable import SymbolTable
-from antachawy.shared import print_table
-from antachawy.sourcecode import SourceCode
+from antachawi.symboltable import SymbolTable
+from antachawi.shared import print_table
+from antachawi.sourcecode import SourceCode
 from tabulate import tabulate
 import os
 

@@ -1,0 +1,10 @@
+qhapaq () 
+{
+    yupay a = 1
+    yupay b = 2
+    yupay c
+    c = a * b
+    sananpa letra = 'A'
+    rikuchiy ("La multiplacion de ", a, " * ", b, " es ", c)
+    rikuchiy ("La letra es ", letra)
+}

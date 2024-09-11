@@ -10,6 +10,6 @@ qhapaq()
     qaytu saludo = "Hola, mundo!"
     yupay f = a + b
     x = f - 2
-    siqiy(a)
-    siqiy("La suma de " , a , " + " , b , " es " , f)
+    rikuchiy(a)
+    rikuchiy("La suma de " , a , " + " , b , " es " , f)
 }

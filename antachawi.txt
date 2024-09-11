@@ -13,7 +13,7 @@ Condicional -> ari (ExpresionCondicion) newline lbrace newline ListaSentencias r
 CondicionalPrime -> mana_chayqa_ari (ExpresionCondicion) newline lbrace newline ListaSentencias rbrace newline CondicionalPrime
 					| mana_chayqa newline lbrace newline ListaSentencias rbrace newline
 					| ε .
-Impresiones -> siqiy ( ExpresionImpresion ) .
+Impresiones -> rikuchiy ( ExpresionImpresion ) .
 Tipo -> yupay
       | chunkayuq
       | sananpa

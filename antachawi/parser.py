@@ -1,6 +1,6 @@
-from antachawy.definitions import LexemasAntachawy, EtiquetasAntachawy, primeros
-from antachawy.scanner import Scanner
-from antachawy.sourcecode import SourceCode
+from antachawi.definitions import LexemasAntachawy, EtiquetasAntachawy, primeros
+from antachawi.scanner import Scanner
+from antachawi.sourcecode import SourceCode
 from anytree import Node, RenderTree
 from anytree.exporter import UniqueDotExporter
 from tabulate import tabulate
@@ -279,7 +279,7 @@ class RecursiveDescentParser:
     
     def impresion(self):
         node = Node("Impresiones")
-        self.consume(EtiquetasAntachawy.IMPRESION,LexemasAntachawy.SIQIY,node)
+        self.consume(EtiquetasAntachawy.IMPRESION,LexemasAntachawy.RIKUCHIY,node)
         self.consume(EtiquetasAntachawy.PAREN_IZQ,LexemasAntachawy.PAREN_IZQ,node)
         node_expresion_impresion = self.expresion_impresion()
         node_expresion_impresion.parent = node

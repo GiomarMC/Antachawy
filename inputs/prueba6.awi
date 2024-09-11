@@ -4,15 +4,15 @@ qhapaq ()
     chunkayuq salario = 1500.50
     ari (edad > 18) 
     {
-        siqiy (edad, " es mayor de edad.")
+        rikuchiy (edad, " es mayor de edad.")
     }
     mana_chayqa_ari (salario < 1000.0 && salario > 800.0) 
     {
-        siqiy ("Salario bajo.")
+        rikuchiy ("Salario bajo.")
     }
     mana_chayqa 
     {
-        siqiy ("Salario suficiente.")
+        rikuchiy ("Salario suficiente.")
     }
 
 }

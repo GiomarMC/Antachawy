@@ -8,7 +8,7 @@ class LexemasAntachawy:
     ARI = "ari"                                 # if
     MANA_CHAYQA_ARI = "mana_chayqa_ari"         # else if
     MANA_CHAYQA = "mana_chayqa"                 # else
-    SIQIY = "siqiy"                             # print
+    RIKUCHIY = "rikuchiy"                       # print
     IMAPAQ = "imapaq"                           # for
     CHAYKAMA = "chaykama"                       # while
     YANQA = "yanqa"                             # true
@@ -94,7 +94,7 @@ lexema_a_etiqueta = {
     LexemasAntachawy.ARI:               EtiquetasAntachawy.CONDICION_ARI,
     LexemasAntachawy.MANA_CHAYQA_ARI:   EtiquetasAntachawy.CONDICION_MANA_CHAYQA_ARI,
     LexemasAntachawy.MANA_CHAYQA:       EtiquetasAntachawy.CONDICION_MANA_CHAYQA,
-    LexemasAntachawy.SIQIY:             EtiquetasAntachawy.IMPRESION,
+    LexemasAntachawy.RIKUCHIY:          EtiquetasAntachawy.IMPRESION,
     LexemasAntachawy.IMAPAQ:            EtiquetasAntachawy.BUCLE_FOR,
     LexemasAntachawy.CHAYKAMA:          EtiquetasAntachawy.BUCLE_WHILE,
     LexemasAntachawy.SALTO_LINEA:       EtiquetasAntachawy.SALTO_LINEA,

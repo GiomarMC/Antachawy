@@ -1,6 +1,6 @@
-from antachawy.definitions import LexemasAntachawy, EtiquetasAntachawy, lexema_a_etiqueta, simbolos_compuestos
-from antachawy.token import Token
-from antachawy.sourcecode import SourceCode
+from antachawi.definitions import LexemasAntachawy, EtiquetasAntachawy, lexema_a_etiqueta, simbolos_compuestos
+from antachawi.token import Token
+from antachawi.sourcecode import SourceCode
 from tabulate import tabulate
 import re
 import os

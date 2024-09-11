@@ -1,13 +1,13 @@
 import argparse
 import platform
-from antachawy.compiler import Compiler
+from antachawi.compiler import Compiler
 from pathlib import Path
 
-from antachawy import __version__
+from antachawi import __version__
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Antachawy compiler CLI",
+        description="Antachawi compiler CLI",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
         )
     parser.add_argument(
@@ -31,7 +31,7 @@ def main():
         "-v",
         "--version",
         action="version",
-        version=f"Antachawy compiler version {__version__}",
+        version=f"Antachawi compiler version {__version__}",
         help="Muestra la versión del compilador"
         )
 

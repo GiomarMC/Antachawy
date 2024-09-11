@@ -1,12 +1,12 @@
-from antachawy.scanner import Scanner
-from antachawy.parser import RecursiveDescentParser
-from antachawy.consolehandler import ConsoleHandler
-from antachawy.semantic import SemanticAnalyzer
-from antachawy.intermediate import IntermediateCodeGenerator
-from antachawy.optimizer import IntermediateCodeOptimizer
-from antachawy.traductor_c import CodeTranslator
-from antachawy.sourcecode import SourceCode
-from antachawy.antachawy_translator import AntachawyToCppTranslator
+from antachawi.scanner import Scanner
+from antachawi.parser import RecursiveDescentParser
+from antachawi.consolehandler import ConsoleHandler
+from antachawi.semantic import SemanticAnalyzer
+from antachawi.intermediate import IntermediateCodeGenerator
+from antachawi.optimizer import IntermediateCodeOptimizer
+from antachawi.traductor_c import CodeTranslator
+from antachawi.sourcecode import SourceCode
+from antachawi.antachawy_translator import AntachawyToCppTranslator
 import subprocess
 import os
 import platform

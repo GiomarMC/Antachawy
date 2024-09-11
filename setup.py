@@ -8,19 +8,19 @@ with open(HERE / 'requirements.txt') as f:
 VERSION = "0.0.1"
 
 setup(
-    name = "antachawy",
+    name = "antachawi",
     version = VERSION,
     packages = find_packages(),
     include_package_data = True,
     author = "Giomar Muñoz, Melany Cahuana, Andrea Cuela",
     author_email = "gmunozcu@unsa.edu.pe",
     url = "https://github.com/GiomarMC/Antachawy.git",
-    description = "Antachawy compiler package",
+    description = "Antachawi compiler package",
     license = "MIT",
     install_requires = requirements,
     entry_points = {
         'console_scripts': [
-            'antachawy = antachawy.main:main',
+            'antachawi = antachawi.main:main',
         ],
     },
 )

@@ -1,5 +1,5 @@
 import re
-from antachawy.sourcecode import SourceCode
+from antachawi.sourcecode import SourceCode
 
 class AntachawyToCppTranslator:
     def __init__(self, source_code: SourceCode):
@@ -15,7 +15,7 @@ class AntachawyToCppTranslator:
             r'\bari\b': "if",
             r'\bmana_chayqa_ari\b': "else if",  # else if en C++
             r'\bmana_chayqa\b': "else",
-            r'\bsiqiy\b': "cout",
+            r'\brikuchiy\b': "cout",
             r'\byanqa\b': "true",
             r'\bchiqaq\b': "false"
         }

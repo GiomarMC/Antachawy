@@ -1,4 +1,4 @@
-from antachawy.shared import symbol_table
+from antachawi.shared import symbol_table
 from tabulate import tabulate
 import os
 
